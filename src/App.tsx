@@ -1,0 +1,99 @@
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { OperatorView } from './components/operator/OperatorView';
+import { ManagerDashboard } from './components/manager/ManagerDashboard';
+import { OperatorLogin } from './components/operator/OperatorLogin';
+import { ManagerLogin } from './components/manager/ManagerLogin';
+import { PaywallPix } from './components/PaywallPix';
+import { Button } from './components/ui/Button';
+import { Truck } from 'lucide-react';
+
+const HomeScreen: React.FC = () => {
+  const navigate = useNavigate();
+  return (
+    <div className="min-h-screen bg-gray-900 flex flex-col justify-center items-center text-white p-6 font-sans">
+      <div className="w-24 h-24 bg-yellow-500 rounded-3xl flex items-center justify-center shadow-2xl mb-8">
+        <Truck className="w-14 h-14 text-gray-900" />
+      </div>
+      <h1 className="text-4xl sm:text-5xl font-black tracking-tighter text-yellow-500 mb-2 text-center uppercase">FROTA CHECK</h1>
+      <p className="text-sm font-bold tracking-widest text-gray-500 uppercase mb-12 text-center">Sistema de Auditoria em Campo</p>
+      
+      <div className="flex flex-col gap-4 w-full max-w-sm">
+        <Button size="lg" className="h-16 text-lg font-black bg-yellow-500 text-gray-900 border-b-4 border-yellow-600 hover:bg-yellow-400 uppercase tracking-widest" onClick={() => navigate('/operator-login')}>
+          Acesso Operador
+        </Button>
+        <Button size="lg" className="h-16 text-lg font-bold bg-transparent border-2 border-gray-700 text-gray-400 hover:border-gray-500 hover:bg-gray-800 uppercase tracking-widest" onClick={() => navigate('/manager-login')}>
+          Acesso Gestor
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode; allowedRole: 'manager' | 'operator' }) => {
+  const { role, empresa, user, loading } = useAuth();
+  
+  if (loading) return null;
+  if (role !== allowedRole) return <Navigate to="/" replace />;
+  
+  if (role === 'manager' && empresa?.statusAssinatura === 'inativo') {
+    return <PaywallPix email={user?.email || ''} />;
+  }
+  
+  return <>{children}</>;
+};
+
+const AppRoutes: React.FC = () => {
+  const { role, loading, logout, empresa } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex justify-center items-center">
+        <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <Routes>
+        <Route 
+          path="/" 
+          element={
+            role === 'manager' ? <Navigate to="/dashboard" replace /> :
+            role === 'operator' ? <Navigate to="/operador" replace /> :
+            <HomeScreen />
+          } 
+        />
+        
+        <Route path="/manager-login" element={<ManagerLogin />} />
+        <Route path="/operator-login" element={<OperatorLogin />} />
+
+        <Route path="/dashboard" element={
+          <ProtectedRoute allowedRole="manager">
+            <ManagerDashboard />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/operador" element={
+          <ProtectedRoute allowedRole="operator">
+            <OperatorView />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
+  );
+};
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}

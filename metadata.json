@@ -1,0 +1,6 @@
+{
+  "name": "FrotaCheck",
+  "description": "Aplicativo para auditoria e liberação diária de máquinas pesadas com Visão do Operador (offline-first) e Visão do Gestor.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": []
+}

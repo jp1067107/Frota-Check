@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Machine": {
+      "title": "Machine",
+      "description": "A piece of heavy machinery.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Machine name or identifier", "maxLength": 128 },
+        "status": { "type": "string", "enum": ["active", "maintenance"] },
+        "createdAt": { "type": "number", "description": "Timestamp" },
+        "updatedAt": { "type": "number", "description": "Timestamp" }
+      },
+      "required": ["name", "status", "createdAt", "updatedAt"]
+    },
+    "Checklist": {
+      "title": "Checklist",
+      "description": "A daily checklist submitted by an operator.",
+      "type": "object",
+      "properties": {
+        "machineId": { "type": "string", "maxLength": 128 },
+        "operatorPin": { "type": "string", "maxLength": 10 },
+        "panelPhotoUrl": { "type": "string", "maxLength": 1024 },
+        "oilPhotoUrl": { "type": "string", "maxLength": 1024 },
+        "waterPhotoUrl": { "type": "string", "maxLength": 1024 },
+        "createdAt": { "type": "number" },
+        "userId": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["machineId", "operatorPin", "panelPhotoUrl", "oilPhotoUrl", "waterPhotoUrl", "createdAt", "userId"]
+    },
+    "UserRole": {
+      "title": "UserRole",
+      "description": "User roles for RBAC",
+      "type": "object",
+      "properties": {
+        "isAdmin": { "type": "boolean" },
+        "email": { "type": "string", "maxLength": 256 }
+      },
+      "required": ["isAdmin", "email"]
+    }
+  },
+  "firestore": {
+    "/maquinas/{machineId}": {
+      "schema": "Machine",
+      "description": "Stores machine definitions and their current status."
+    },
+    "/checklists/{checklistId}": {
+      "schema": "Checklist",
+      "description": "Stores daily checklists submitted by operators."
+    },
+    "/userRoles/{userId}": {
+      "schema": "UserRole",
+      "description": "Stores user roles. Only admins can read/write this, or read their own."
+    }
+  }
+}
