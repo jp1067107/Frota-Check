@@ -67,7 +67,29 @@ export const OperatorView: React.FC = () => {
       const timestamp = Date.now();
       const basePath = `checklists/${today}/${empresaId}/${selectedMachine}_${timestamp}`;
 
-      // Uploads to Storage
+      if (!navigator.onLine) {
+        // Modo OFFLINE: salva na fila local
+        import('../../utils/syncQueue').then(({ saveToSyncQueue }) => {
+          saveToSyncQueue({
+            maquinaId: selectedMachine,
+            maquinaNome: maquinaNome,
+            operadorId: operadorId,
+            fotosData: {
+              painel: panelPhoto,
+              oleo: oilPhoto,
+              radiador: waterPhoto
+            },
+            userId: user.uid,
+            empresaId: empresaId,
+            timestamp: timestamp
+          });
+        });
+        alert('Você está OFFLINE. O checklist foi salvo no aparelho e será enviado automaticamente quando a internet voltar!');
+        setScreen('C');
+        return;
+      }
+
+      // Uploads to Storage (Apenas se ONLINE)
       const panelRef = ref(storage, `${basePath}/painel.jpg`);
       await uploadString(panelRef, panelPhoto, 'data_url');
       const painelUrl = await getDownloadURL(panelRef);

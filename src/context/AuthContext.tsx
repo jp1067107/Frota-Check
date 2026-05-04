@@ -57,10 +57,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (currentUser && !currentUser.isAnonymous) {
         // Manager flow
         try {
-          const q = query(collection(db, 'empresas'), where('emailGestor', '==', currentUser.email));
-          const snap = await getDocs(q);
-          if (!snap.empty) {
-            setEmpresa({ id: snap.docs[0].id, ...snap.docs[0].data() } as Empresa);
+          const empDoc = await getDoc(doc(db, 'empresas', currentUser.uid));
+          if (empDoc.exists()) {
+            setEmpresa({ id: empDoc.id, ...empDoc.data() } as Empresa);
+          } else {
+            const q = query(collection(db, 'empresas'), where('emailGestor', '==', currentUser.email));
+            const snap = await getDocs(q);
+            if (!snap.empty) {
+              setEmpresa({ id: snap.docs[0].id, ...snap.docs[0].data() } as Empresa);
+            }
           }
         } catch (e) {
           console.error("Error fetching empresa", e);
@@ -111,16 +116,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const loginOperator = async (empresaId: string, pin: string) => {
+  const loginOperator = async (codigoAcesso: string, pin: string) => {
     setLoading(true);
     try {
       await signInAnonymously(auth);
 
-      const empDoc = await getDoc(doc(db, 'empresas', empresaId));
-      if (!empDoc.exists()) {
-        throw new Error('Empresa não encontrada.');
+      const qE = query(collection(db, 'empresas'), where('codigoAcesso', '==', codigoAcesso.toLowerCase().replace(/\s/g, '')));
+      const snapE = await getDocs(qE);
+      
+      if (snapE.empty) {
+        throw new Error('Empresa não encontrada com esse Código de Acesso.');
       }
+      
+      const empDoc = snapE.docs[0];
+      const empresaId = empDoc.id;
       const empData = empDoc.data() as Empresa;
+      
       if (empData.statusAssinatura === 'inativo') {
         throw new Error('Sistema temporariamente bloqueado. Contate o gestor da frota.');
       }
@@ -136,7 +147,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('operatorData', JSON.stringify(opData));
       setOperatorData(opData);
       setRole('operator');
-      setEmpresa({ id: empDoc.id, ...empData });
+      setEmpresa({ id: empresaId, ...empData });
     } catch (err) {
       await signOut(auth);
       throw err;

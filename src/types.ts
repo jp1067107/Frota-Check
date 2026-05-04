@@ -1,6 +1,7 @@
 export interface Empresa {
   id: string;
-  nome: string;
+  nomeEmpresa: string;
+  codigoAcesso: string;
   emailGestor: string;
   statusAssinatura: 'ativo' | 'inativo';
 }

@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { OperatorView } from './components/operator/OperatorView';
 import { ManagerDashboard } from './components/manager/ManagerDashboard';
 import { OperatorLogin } from './components/operator/OperatorLogin';
 import { ManagerLogin } from './components/manager/ManagerLogin';
+import { RegisterGestor } from './components/manager/RegisterGestor';
 import { PaywallPix } from './components/PaywallPix';
 import { Button } from './components/ui/Button';
 import { Truck } from 'lucide-react';
+import { processSyncQueue } from './utils/syncQueue';
 
 const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -25,6 +27,9 @@ const HomeScreen: React.FC = () => {
         </Button>
         <Button size="lg" className="h-16 text-lg font-bold bg-transparent border-2 border-gray-700 text-gray-400 hover:border-gray-500 hover:bg-gray-800 uppercase tracking-widest" onClick={() => navigate('/manager-login')}>
           Acesso Gestor
+        </Button>
+        <Button variant="ghost" size="lg" className="mt-4 h-12 text-sm font-bold text-gray-500 hover:text-yellow-500 uppercase tracking-widest" onClick={() => navigate('/manager-register')}>
+          Cadastrar Empresa
         </Button>
       </div>
     </div>
@@ -47,6 +52,20 @@ const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode; 
 const AppRoutes: React.FC = () => {
   const { role, loading, logout, empresa } = useAuth();
 
+  useEffect(() => {
+    // Tenta sincronizar ao carregar
+    processSyncQueue();
+    
+    // Tenta sincronizar quando a internet voltar
+    const handleOnline = () => {
+      console.log('App is online. Processing sync queue...');
+      processSyncQueue();
+    };
+    
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-900 flex justify-center items-center">
@@ -68,6 +87,7 @@ const AppRoutes: React.FC = () => {
         />
         
         <Route path="/manager-login" element={<ManagerLogin />} />
+        <Route path="/manager-register" element={<RegisterGestor />} />
         <Route path="/operator-login" element={<OperatorLogin />} />
 
         <Route path="/dashboard" element={

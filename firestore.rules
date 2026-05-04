@@ -12,7 +12,8 @@ service cloud.firestore {
 
     match /empresas/{empresaId} {
       allow read: if isSignedIn();
-      allow write: if isAdmin();
+      allow create: if isSignedIn() && request.auth.uid == empresaId;
+      allow update, delete: if isAdmin() || (isSignedIn() && request.auth.uid == empresaId);
     }
 
     match /operadores/{opId} {

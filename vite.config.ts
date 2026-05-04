@@ -18,14 +18,19 @@ export default defineConfig(({mode}) => {
         manifest: {
           name: 'FrotaCheck',
           short_name: 'FrotaCheck',
-          theme_color: '#1a1a1a',
-          background_color: '#1a1a1a',
+          theme_color: '#eab308',
+          background_color: '#111827',
           display: 'standalone',
           orientation: 'portrait',
           icons: [
             {
-              src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTZWMThIMzExNHpNMjEgOFYxMEgzVjh6Ii8+PC9zdmc+',
+              src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWFiMzA4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTE0IDE4VjZMMjAgMTBWMThIMTRaIi8+PHBhdGggZD0iTTQgMThWMTBMMTAgNlYxOEg0WiIvPjxwYXRoIGQ9Ik0xNCAxMEgxMCIvPjwvc3ZnPg==',
               sizes: '192x192',
+              type: 'image/svg+xml',
+            },
+            {
+              src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWFiMzA4IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTE0IDE4VjZMMjAgMTBWMThIMTRaIi8+PHBhdGggZD0iTTQgMThWMTBMMTAgNlYxOEg0WiIvPjxwYXRoIGQ9Ik0xNCAxMEgxMCIvPjwvc3ZnPg==',
+              sizes: '512x512',
               type: 'image/svg+xml',
             }
           ]
