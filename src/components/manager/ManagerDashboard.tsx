@@ -43,9 +43,15 @@ export const ManagerDashboard: React.FC = () => {
     });
 
     const startOfToday = startOfDay(new Date());
-    const qC = query(collection(db, 'checklists'), where('empresaId', '==', empresa.id), where('dataHora', '>=', startOfToday));
+    const qC = query(collection(db, 'checklists'), where('empresaId', '==', empresa.id));
     const unsubC = onSnapshot(qC, snapshot => {
-      setChecklists(snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Checklist)));
+      const allChecklists = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Checklist));
+      // Filter today's checklists client-side to avoid requiring a composite index
+      const todayChecklists = allChecklists.filter(c => {
+        const date = getSafeDate(c.dataHora);
+        return isSameDay(date, new Date()) && date >= startOfToday;
+      });
+      setChecklists(todayChecklists);
     });
     
     const qOp = query(collection(db, 'operadores'), where('empresaId', '==', empresa.id));

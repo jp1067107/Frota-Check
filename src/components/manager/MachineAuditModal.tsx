@@ -27,8 +27,7 @@ export const MachineAuditModal: React.FC<Props> = ({ machine, onClose }) => {
 
     const q = query(
       collection(db, 'checklists'),
-      where('maquinaId', '==', machine.id),
-      orderBy('dataHora', 'desc')
+      where('maquinaId', '==', machine.id)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -36,6 +35,14 @@ export const MachineAuditModal: React.FC<Props> = ({ machine, onClose }) => {
       snapshot.forEach(doc => {
         list.push({ id: doc.id, ...doc.data() } as Checklist);
       });
+      
+      // Sort client-side to avoid requiring a composite index
+      list.sort((a, b) => {
+        const dateA = a.dataHora?.toDate ? a.dataHora.toDate() : new Date(a.dataHora);
+        const dateB = b.dataHora?.toDate ? b.dataHora.toDate() : new Date(b.dataHora);
+        return dateB.getTime() - dateA.getTime();
+      });
+
       setChecklists(list);
       setLoading(false);
     }, (error) => {
