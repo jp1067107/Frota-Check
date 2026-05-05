@@ -30,7 +30,7 @@ export const ManagerLogin: React.FC = () => {
     } catch (err: any) {
       // Very basic error mapping
       if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-         setError('E-mail ou senha incorretos.');
+         setError('E-mail não encontrado ou senha incorreta. Caso não tenha uma conta, crie a sua abaixo.');
       } else {
          setError(err.message || 'Erro ao fazer login.');
       }
@@ -184,6 +184,16 @@ export const ManagerLogin: React.FC = () => {
             >
               {loading ? 'Acessando...' : 'Entrar no Painel'}
             </Button>
+            
+            <div className="text-center mt-6 pt-6 border-t border-white/5">
+              <button 
+                type="button" 
+                onClick={() => navigate('/manager-register')} 
+                className="text-zinc-400 hover:text-white text-xs font-bold uppercase tracking-widest transition-colors"
+              >
+                Não tem conta? Criar Conta
+              </button>
+            </div>
           </form>
         )}
       </div>

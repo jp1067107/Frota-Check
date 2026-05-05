@@ -126,7 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Fetch empresa for operator when operatorData is set
   useEffect(() => {
     const fetchOperatorEmpresa = async () => {
-      if (role === 'operator' && operatorData) {
+      if (role === 'operator' && operatorData?.empresaId) {
         setLoading(true);
         try {
           const empDoc = await getDoc(doc(db, 'empresas', operatorData.empresaId));
@@ -142,7 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
     fetchOperatorEmpresa();
-  }, [operatorData, role]);
+  }, [operatorData?.empresaId, role]);
 
   const loginManager = async (email: string, pass: string) => {
     setLoading(true);
@@ -164,7 +164,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           } else {
             // Auto-create recovery
             console.log("No empresa found, auto-creating recovery record...");
-            const codigoAcesso = `EMP-${currentUser.uid.substring(0, 5).toUpperCase()}`;
+            const codigoAcesso = `emp-${currentUser.uid.substring(0, 5).toLowerCase()}`;
             const newEmpresa = {
               nomeEmpresa: `Empresa Recuperada`,
               codigoAcesso: codigoAcesso,

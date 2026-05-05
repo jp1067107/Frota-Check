@@ -247,9 +247,14 @@ export const OperatorView: React.FC = () => {
         )}
 
         {screen === 'B' && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-300">
-            
-            <div className="bg-[#18181b] p-6 rounded-3xl border border-white/5 shadow-2xl text-center">
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-300 relative">
+            <button 
+              onClick={() => setScreen('A')}
+              className="absolute -top-12 left-0 text-zinc-500 hover:text-white transition-colors flex items-center gap-2 font-bold uppercase tracking-widest text-[10px]"
+            >
+              <ChevronRight className="w-5 h-5 rotate-180" /> Voltar
+            </button>
+            <div className="bg-[#18181b] p-6 rounded-3xl border border-white/5 shadow-2xl text-center mt-8">
               <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Máquina em Liberação</span>
               <h2 className="text-xl sm:text-2xl font-black text-amber-500 uppercase tracking-tight">{getMachineName()}</h2>
             </div>

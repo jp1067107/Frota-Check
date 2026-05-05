@@ -1,7 +1,11 @@
 import React from 'react';
 import { Button } from './ui/Button';
+import { useAuth } from '../context/AuthContext';
+import { LogOut } from 'lucide-react';
 
 export const PaywallPix: React.FC<{ email: string }> = ({ email }) => {
+  const { logout } = useAuth();
+  
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col items-center justify-center p-6 font-sans relative overflow-hidden">
       <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
@@ -23,15 +27,27 @@ export const PaywallPix: React.FC<{ email: string }> = ({ email }) => {
           Renove sua assinatura para liberar o acesso ao painel e a operação da frota em campo.
         </p>
 
-        <a 
-          href={`mailto:suporte@frotacheck.com.br?subject=Renovação - ${email}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Button size="lg" className="w-full bg-zinc-100 text-zinc-950 hover:bg-white py-6 font-black uppercase tracking-widest text-lg shadow-lg shadow-white/10 active:scale-[0.98] transition-all border-0">
-            Falar com Suporte
+        <div className="flex flex-col gap-3">
+          <a 
+            href={`mailto:suporte@frotacheck.com.br?subject=Renovação - ${email}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button size="lg" className="w-full bg-zinc-100 text-zinc-950 hover:bg-white py-6 font-black uppercase tracking-widest text-lg shadow-lg shadow-white/10 active:scale-[0.98] transition-all border-0">
+              Falar com Suporte
+            </Button>
+          </a>
+          
+          <Button 
+            onClick={logout} 
+            variant="outline" 
+            size="lg" 
+            className="w-full bg-transparent border-white/10 text-zinc-400 hover:text-white hover:bg-white/5 py-6 font-bold uppercase tracking-widest transition-all"
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Voltar ao Login
           </Button>
-        </a>
+        </div>
       </div>
     </div>
   );
