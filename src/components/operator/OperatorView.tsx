@@ -177,8 +177,8 @@ export const OperatorView: React.FC = () => {
         </div>
         <div className="flex items-center gap-2 sm:gap-4">
           {isInstallable && (
-            <Button variant="outline" className="hidden sm:flex text-xs font-bold uppercase tracking-widest border-amber-500/20 text-amber-500 hover:bg-amber-500/10 gap-2 items-center" onClick={installPWA}>
-              <Download className="w-4 h-4" /> Instalar App
+            <Button variant="outline" className="flex text-xs font-bold uppercase tracking-widest border-amber-500/20 text-amber-500 hover:bg-amber-500/10 gap-2 items-center" onClick={installPWA}>
+              <Download className="w-4 h-4" /> <span className="hidden xs:inline">Instalar App</span>
             </Button>
           )}
           <Button variant="ghost" className="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-red-400 hover:bg-red-400/10 transition-colors" onClick={logout}>
