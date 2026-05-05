@@ -18,27 +18,31 @@ export default {
         return env.ASSETS.fetch(new Request(new URL('/', request.url)));
       }
 
-      // 3. Fix Binary Delivery for PNGs
-      if (path.endsWith('.png')) {
+      // 3. Fix Binary Delivery for Images (PNG, JPG, ICO, SVG)
+      if (path.match(/\.(png|jpg|jpeg|ico)$/i)) {
         // Ensure it's read as an arrayBuffer, preventing UTF-8 corruption
         const buffer = await response.arrayBuffer();
+        
+        const newHeaders = new Headers(response.headers);
+        if (path.endsWith('.png')) newHeaders.set('Content-Type', 'image/png');
+        if (path.endsWith('.ico')) newHeaders.set('Content-Type', 'image/x-icon');
+        if (path.match(/\.jpe?g$/i)) newHeaders.set('Content-Type', 'image/jpeg');
+
         return new Response(buffer, {
           status: response.status,
-          headers: {
-            ...Object.fromEntries(response.headers),
-            'Content-Type': 'image/png',
-          },
+          headers: newHeaders,
         });
       }
 
       // 4. Ensure Manifest has correct Content-Type
       if (path.endsWith('manifest.webmanifest')) {
-        return new Response(await response.text(), {
+        const text = await response.text();
+        const newHeaders = new Headers(response.headers);
+        newHeaders.set('Content-Type', 'application/manifest+json');
+        
+        return new Response(text, {
           status: response.status,
-          headers: {
-            ...Object.fromEntries(response.headers),
-            'Content-Type': 'application/manifest+json',
-          },
+          headers: newHeaders,
         });
       }
 

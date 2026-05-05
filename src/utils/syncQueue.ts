@@ -22,20 +22,7 @@ export const processSyncQueue = async () => {
       const today = new Date(item.timestamp).toISOString().split('T')[0];
       const basePath = `checklists/${today}/${item.empresaId}/${item.maquinaId}_${item.timestamp}`;
 
-      // Uploads to Storage
-      const panelRef = ref(storage, `${basePath}/painel.jpg`);
-      await uploadString(panelRef, item.fotosData.painel, 'data_url');
-      const painelUrl = await getDownloadURL(panelRef);
-
-      const oilRef = ref(storage, `${basePath}/oleo.jpg`);
-      await uploadString(oilRef, item.fotosData.oleo, 'data_url');
-      const oleoUrl = await getDownloadURL(oilRef);
-
-      const waterRef = ref(storage, `${basePath}/radiador.jpg`);
-      await uploadString(waterRef, item.fotosData.radiador, 'data_url');
-      const radiadorUrl = await getDownloadURL(waterRef);
-
-      // Salvar no Firestore
+      // Salvar no Firestore com Base64 direto
       const docId = `${item.maquinaId}_${item.timestamp}`;
       await setDoc(doc(db, 'checklists', docId), {
         maquinaId: item.maquinaId,
@@ -45,9 +32,9 @@ export const processSyncQueue = async () => {
         dataHora: serverTimestamp(),
         status: 'liberada',
         fotos: {
-          painel: painelUrl,
-          oleo: oleoUrl,
-          radiador: radiadorUrl
+          painel: item.fotosData.painel,
+          oleo: item.fotosData.oleo,
+          radiador: item.fotosData.radiador
         },
         userId: item.userId,
         empresaId: item.empresaId

@@ -53,9 +53,9 @@ const HomeScreen: React.FC = () => {
 };
 
 const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode; allowedRole: 'manager' | 'operator' }) => {
-  const { role, empresa, user, loading } = useAuth();
+  const { role, empresa, user, initialLoading } = useAuth();
   
-  if (loading) return null;
+  if (initialLoading) return null;
   if (role !== allowedRole) return <Navigate to="/" replace />;
   
   if (role === 'manager' && empresa?.statusAssinatura === 'inativo') {
@@ -66,7 +66,7 @@ const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode; 
 };
 
 const AppRoutes: React.FC = () => {
-  const { role, loading, logout, empresa } = useAuth();
+  const { role, loading, initialLoading, logout, empresa } = useAuth();
 
   useEffect(() => {
     // Tenta sincronizar ao carregar
@@ -82,10 +82,10 @@ const AppRoutes: React.FC = () => {
     return () => window.removeEventListener('online', handleOnline);
   }, []);
 
-  if (loading) {
+  if (initialLoading) {
     return (
       <div className="min-h-screen bg-gray-900 flex justify-center items-center">
-        <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }

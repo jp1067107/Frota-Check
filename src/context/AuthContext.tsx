@@ -16,6 +16,7 @@ interface AuthContextType {
   operatorData: OperatorData | null;
   role: 'manager' | 'operator' | null;
   loading: boolean;
+  initialLoading: boolean;
   loginManager: (e: string, p: string) => Promise<void>;
   loginOperator: (eId: string, pin: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -26,7 +27,8 @@ const AuthContext = createContext<AuthContextType>({
   empresa: null,
   operatorData: null,
   role: null,
-  loading: true,
+  loading: false,
+  initialLoading: true,
   loginManager: async () => {},
   loginOperator: async () => {},
   logout: async () => {},
@@ -37,7 +39,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [empresa, setEmpresa] = useState<Empresa | null>(null);
   const [operatorData, setOperatorData] = useState<OperatorData | null>(null);
   const [role, setRole] = useState<'manager' | 'operator' | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const isLoggingInOperator = React.useRef(false);
 
   useEffect(() => {
@@ -94,6 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Anonymous user check.
         if (isLoggingInOperator.current) {
           // Let loginOperator handle state changes and loading=false
+          setInitialLoading(false);
           return;
         }
         
@@ -117,7 +121,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setOperatorData(null);
       }
       
-      setLoading(false);
+      setInitialLoading(false);
     });
 
     return () => unsubscribe();
@@ -195,11 +199,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await signInAnonymously(auth);
 
-      const qE = query(collection(db, 'empresas'), where('codigoAcesso', '==', codigoAcesso.toLowerCase().replace(/\s/g, '')));
-      const snapE = await getDocs(qE);
+      const codigoLimpo = codigoAcesso.replace(/\s/g, '');
+      let qE = query(collection(db, 'empresas'), where('codigoAcesso', '==', codigoLimpo.toLowerCase()));
+      let snapE = await getDocs(qE);
       
       if (snapE.empty) {
-        throw new Error('Empresa não encontrada com esse Código de Acesso.');
+        qE = query(collection(db, 'empresas'), where('codigoAcesso', '==', codigoLimpo.toUpperCase()));
+        snapE = await getDocs(qE);
+      }
+      
+      if (snapE.empty) {
+        // Fallback exact match just in case
+        qE = query(collection(db, 'empresas'), where('codigoAcesso', '==', codigoLimpo));
+        snapE = await getDocs(qE);
+      }
+      
+      if (snapE.empty) {
+        // Ultimato fallback: fetch all and find client side (only if small scale, but better safe than sorry if case is very messy)
+        const allEmpresas = await getDocs(collection(db, 'empresas'));
+        const found = allEmpresas.docs.find(d => {
+          const data = d.data();
+          return data.codigoAcesso && data.codigoAcesso.toLowerCase() === codigoLimpo.toLowerCase();
+        });
+        
+        if (found) {
+          snapE = { empty: false, docs: [found] } as any;
+        } else {
+          throw new Error('Empresa não encontrada com esse Código de Acesso.');
+        }
       }
       
       const empDoc = snapE.docs[0];
@@ -245,7 +272,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, empresa, operatorData, role, loading, loginManager, loginOperator, logout }}>
+    <AuthContext.Provider value={{ user, empresa, operatorData, role, loading, initialLoading, loginManager, loginOperator, logout }}>
       {children}
     </AuthContext.Provider>
   );

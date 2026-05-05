@@ -120,20 +120,7 @@ export const OperatorView: React.FC = () => {
         return;
       }
 
-      // Uploads to Storage (Apenas se ONLINE)
-      const panelRef = ref(storage, `${basePath}/painel.jpg`);
-      await uploadString(panelRef, panelPhoto, 'data_url');
-      const painelUrl = await getDownloadURL(panelRef);
-
-      const oilRef = ref(storage, `${basePath}/oleo.jpg`);
-      await uploadString(oilRef, oilPhoto, 'data_url');
-      const oleoUrl = await getDownloadURL(oilRef);
-
-      const waterRef = ref(storage, `${basePath}/radiador.jpg`);
-      await uploadString(waterRef, waterPhoto, 'data_url');
-      const radiadorUrl = await getDownloadURL(waterRef);
-
-      // Salvar no Firestore
+      // Salvar no Firestore com Base64 direto (sem Storage)
       const docId = `${selectedMachine}_${timestamp}`;
       await setDoc(doc(db, 'checklists', docId), {
         maquinaId: selectedMachine,
@@ -143,9 +130,9 @@ export const OperatorView: React.FC = () => {
         dataHora: serverTimestamp(),
         status: 'liberada',
         fotos: {
-          painel: painelUrl,
-          oleo: oleoUrl,
-          radiador: radiadorUrl
+          painel: panelPhoto,
+          oleo: oilPhoto,
+          radiador: waterPhoto
         },
         userId: user.uid,
         empresaId: empresaId
