@@ -12,25 +12,12 @@
     <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin>
     <link rel="dns-prefetch" href="https://firestore.googleapis.com">
     <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
+    <link rel="manifest" href="/manifest.webmanifest">
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script type="module">
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          const isDev = import.meta.env.DEV;
-          const swUrl = isDev ? '/dev-sw.js?dev-sw' : '/sw.js';
-          navigator.serviceWorker.register(swUrl, { 
-            type: isDev ? 'module' : 'classic' 
-          }).then((reg) => {
-            console.log('SW registered!', reg);
-          }).catch((err) => {
-            console.error('SW registration failed:', err);
-          });
-        });
-      }
-    </script>
+    <!-- Cache buster -->
   </body>
 </html>
 
