@@ -19,26 +19,31 @@ const HomeScreen: React.FC = () => {
   const { isInstallable, installPWA } = usePWAInstall();
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col justify-center items-center text-white p-6 font-sans">
-      <div className="w-24 h-24 bg-yellow-500 rounded-3xl flex items-center justify-center shadow-2xl mb-8">
-        <Truck className="w-14 h-14 text-gray-900" />
+    <div className="min-h-screen bg-[#09090b] flex flex-col justify-center items-center text-white p-6 font-sans relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+
+      <div className="w-24 h-24 bg-gradient-to-br from-amber-400 to-amber-600 rounded-3xl flex items-center justify-center shadow-lg shadow-amber-500/20 mb-8 relative z-10">
+        <Truck className="w-14 h-14 text-zinc-950" />
       </div>
-      <h1 className="text-4xl sm:text-5xl font-black tracking-tighter text-yellow-500 mb-2 text-center uppercase">FROTA CHECK</h1>
-      <p className="text-sm font-bold tracking-widest text-gray-500 uppercase mb-12 text-center">Sistema de Auditoria em Campo</p>
+      <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-2 text-center uppercase relative z-10">
+        Frota<span className="text-amber-500">Check</span>
+      </h1>
+      <p className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-12 text-center relative z-10">Sistema de Auditoria em Campo</p>
       
-      <div className="flex flex-col gap-4 w-full max-w-sm">
-        <Button size="lg" className="h-16 text-lg font-black bg-yellow-500 text-gray-900 border-b-4 border-yellow-600 hover:bg-yellow-400 uppercase tracking-widest" onClick={() => navigate('/operator-login')}>
+      <div className="flex flex-col gap-4 w-full max-w-sm relative z-10">
+        <Button size="lg" className="h-16 text-lg font-black bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-zinc-950 shadow-lg shadow-amber-500/20 uppercase tracking-widest border-0" onClick={() => navigate('/operator-login')}>
           Acesso Operador
         </Button>
-        <Button size="lg" className="h-16 text-lg font-bold bg-transparent border-2 border-gray-700 text-gray-400 hover:border-gray-500 hover:bg-gray-800 uppercase tracking-widest" onClick={() => navigate('/manager-login')}>
+        <Button size="lg" className="h-16 text-lg font-bold bg-[#18181b] border border-white/5 text-zinc-300 hover:text-white hover:bg-white/5 uppercase tracking-widest shadow-inner transition-colors" onClick={() => navigate('/manager-login')}>
           Acesso Gestor
         </Button>
-        <Button variant="ghost" size="lg" className="mt-4 h-12 text-sm font-bold text-gray-500 hover:text-yellow-500 uppercase tracking-widest" onClick={() => navigate('/manager-register')}>
+        <Button variant="ghost" size="lg" className="mt-4 h-12 text-[10px] font-bold text-zinc-500 hover:text-white uppercase tracking-widest transition-colors" onClick={() => navigate('/manager-register')}>
           Cadastrar Empresa
         </Button>
         
         {isInstallable && (
-          <Button variant="outline" size="lg" className="mt-2 h-14 text-sm font-bold border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/10 uppercase tracking-widest flex items-center justify-center gap-2" onClick={installPWA}>
+          <Button variant="outline" size="lg" className="mt-2 h-14 text-xs font-bold border-amber-500/20 text-amber-500 hover:bg-amber-500/10 uppercase tracking-widest flex items-center justify-center gap-2 transition-colors" onClick={installPWA}>
             <Download className="w-5 h-5" /> Instalar App
           </Button>
         )}

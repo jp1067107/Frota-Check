@@ -249,32 +249,32 @@ export const OperatorView: React.FC = () => {
         {screen === 'B' && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-300">
             
-            <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-lg text-center">
-              <span className="text-gray-400 text-sm font-bold uppercase tracking-widest block mb-1">Máquina em Liberação</span>
-              <h2 className="text-2xl sm:text-3xl font-black text-yellow-500">{getMachineName()}</h2>
+            <div className="bg-[#18181b] p-6 rounded-3xl border border-white/5 shadow-2xl text-center">
+              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Máquina em Liberação</span>
+              <h2 className="text-xl sm:text-2xl font-black text-amber-500 uppercase tracking-tight">{getMachineName()}</h2>
             </div>
             
             {/* Passos do Checklist */}
             <div className="space-y-4">
               
               {/* Passo 1 - Painel */}
-              <div className={`bg-gray-800 p-5 rounded-2xl border-4 transition-all duration-300 ${panelPhoto ? 'border-green-500' : 'border-yellow-500'}`}>
+              <div className={`bg-[#18181b] p-5 rounded-3xl border-2 transition-all duration-300 shadow-inner ${panelPhoto ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-amber-500/50 shadow-amber-500/10'}`}>
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl font-bold text-white uppercase">1. Painel (Horímetro)</h3>
-                  {panelPhoto && <CheckCircle className="text-green-500 w-8 h-8" />}
+                  <h3 className="text-sm font-bold text-white uppercase tracking-widest">1. Painel (Horímetro)</h3>
+                  {panelPhoto && <CheckCircle className="text-emerald-500 w-6 h-6" />}
                 </div>
                 
                 {!panelPhoto ? (
-                  <label className="flex flex-col items-center justify-center p-8 bg-gray-900 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-yellow-500 active:bg-gray-800 transition-colors">
-                    <Camera className="w-12 h-12 text-yellow-500 mb-3" />
-                    <span className="text-lg font-bold text-gray-300 uppercase">Tocar para Foto</span>
+                  <label className="flex flex-col items-center justify-center p-8 bg-[#09090b] border border-dashed border-white/10 rounded-2xl cursor-pointer hover:border-amber-500/50 active:bg-white/5 transition-colors">
+                    <Camera className="w-10 h-10 text-amber-500 mb-3 opacity-80" />
+                    <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Tocar para Foto</span>
                     <input type="file" accept="image/*" capture="environment" className="hidden" onChange={e => handleCapture(e, setPanelPhoto)} />
                   </label>
                 ) : (
-                  <div className="relative">
-                    <img src={panelPhoto} alt="Painel" className="w-full h-48 object-cover rounded-xl border border-gray-700" />
-                    <label className="absolute bottom-4 right-4 bg-gray-900/80 backdrop-blur-sm p-3 rounded-xl border border-gray-600 outline-none text-white font-bold text-sm uppercase flex items-center cursor-pointer active:bg-gray-800">
-                      <Camera className="w-5 h-5 mr-2 text-yellow-500" />
+                  <div className="relative group">
+                    <img src={panelPhoto} alt="Painel" className="w-full h-48 object-cover rounded-2xl border border-white/10" />
+                    <label className="absolute bottom-4 right-4 bg-[#09090b]/80 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 outline-none text-white font-bold text-[10px] uppercase tracking-widest flex items-center cursor-pointer hover:bg-[#18181b] active:scale-95 transition-all shadow-xl">
+                      <Camera className="w-4 h-4 mr-2 text-amber-500" />
                       Refazer
                       <input type="file" accept="image/*" capture="environment" className="hidden" onChange={e => handleCapture(e, setPanelPhoto)} />
                     </label>
@@ -283,23 +283,23 @@ export const OperatorView: React.FC = () => {
               </div>
 
               {/* Passo 2 - Óleo */}
-              <div className={`bg-gray-800 p-5 rounded-2xl border-4 transition-all duration-300 ${!panelPhoto ? 'border-gray-700 opacity-50 pointer-events-none' : oilPhoto ? 'border-green-500' : 'border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.2)]'}`}>
+              <div className={`bg-[#18181b] p-5 rounded-3xl border-2 transition-all duration-300 shadow-inner ${!panelPhoto ? 'border-white/5 opacity-50 grayscale pointer-events-none' : oilPhoto ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-amber-500/50 shadow-amber-500/10'}`}>
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl font-bold text-white uppercase">2. Vareta de Óleo</h3>
-                  {oilPhoto && <CheckCircle className="text-green-500 w-8 h-8" />}
+                  <h3 className="text-sm font-bold text-white uppercase tracking-widest">2. Vareta de Óleo</h3>
+                  {oilPhoto && <CheckCircle className="text-emerald-500 w-6 h-6" />}
                 </div>
                 
                 {!oilPhoto ? (
-                  <label className="flex flex-col items-center justify-center p-8 bg-gray-900 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-yellow-500 active:bg-gray-800 transition-colors">
-                    <Camera className="w-12 h-12 text-yellow-500 mb-3" />
-                    <span className="text-lg font-bold text-gray-300 uppercase">Tocar para Foto</span>
+                  <label className="flex flex-col items-center justify-center p-8 bg-[#09090b] border border-dashed border-white/10 rounded-2xl cursor-pointer hover:border-amber-500/50 active:bg-white/5 transition-colors">
+                    <Camera className="w-10 h-10 text-amber-500 mb-3 opacity-80" />
+                    <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Tocar para Foto</span>
                     <input type="file" accept="image/*" capture="environment" className="hidden" onChange={e => handleCapture(e, setOilPhoto)} />
                   </label>
                 ) : (
-                  <div className="relative">
-                    <img src={oilPhoto} alt="Óleo do motor" className="w-full h-48 object-cover rounded-xl border border-gray-700" />
-                    <label className="absolute bottom-4 right-4 bg-gray-900/80 backdrop-blur-sm p-3 rounded-xl border border-gray-600 outline-none text-white font-bold text-sm uppercase flex items-center cursor-pointer active:bg-gray-800">
-                      <Camera className="w-5 h-5 mr-2 text-yellow-500" />
+                  <div className="relative group">
+                    <img src={oilPhoto} alt="Óleo do motor" className="w-full h-48 object-cover rounded-2xl border border-white/10" />
+                    <label className="absolute bottom-4 right-4 bg-[#09090b]/80 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 outline-none text-white font-bold text-[10px] uppercase tracking-widest flex items-center cursor-pointer hover:bg-[#18181b] active:scale-95 transition-all shadow-xl">
+                      <Camera className="w-4 h-4 mr-2 text-amber-500" />
                       Refazer
                       <input type="file" accept="image/*" capture="environment" className="hidden" onChange={e => handleCapture(e, setOilPhoto)} />
                     </label>
@@ -308,23 +308,23 @@ export const OperatorView: React.FC = () => {
               </div>
 
               {/* Passo 3 - Água */}
-              <div className={`bg-gray-800 p-5 rounded-2xl border-4 transition-all duration-300 ${!oilPhoto ? 'border-gray-700 opacity-50 pointer-events-none' : waterPhoto ? 'border-green-500' : 'border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.2)]'}`}>
+              <div className={`bg-[#18181b] p-5 rounded-3xl border-2 transition-all duration-300 shadow-inner ${!oilPhoto ? 'border-white/5 opacity-50 grayscale pointer-events-none' : waterPhoto ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-amber-500/50 shadow-amber-500/10'}`}>
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl font-bold text-white uppercase">3. Água Radiador</h3>
-                  {waterPhoto && <CheckCircle className="text-green-500 w-8 h-8" />}
+                  <h3 className="text-sm font-bold text-white uppercase tracking-widest">3. Água Radiador</h3>
+                  {waterPhoto && <CheckCircle className="text-emerald-500 w-6 h-6" />}
                 </div>
                 
                 {!waterPhoto ? (
-                  <label className="flex flex-col items-center justify-center p-8 bg-gray-900 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-yellow-500 active:bg-gray-800 transition-colors">
-                    <Camera className="w-12 h-12 text-yellow-500 mb-3" />
-                    <span className="text-lg font-bold text-gray-300 uppercase">Tocar para Foto</span>
+                  <label className="flex flex-col items-center justify-center p-8 bg-[#09090b] border border-dashed border-white/10 rounded-2xl cursor-pointer hover:border-amber-500/50 active:bg-white/5 transition-colors">
+                    <Camera className="w-10 h-10 text-amber-500 mb-3 opacity-80" />
+                    <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Tocar para Foto</span>
                     <input type="file" accept="image/*" capture="environment" className="hidden" onChange={e => handleCapture(e, setWaterPhoto)} />
                   </label>
                 ) : (
-                  <div className="relative">
-                    <img src={waterPhoto} alt="Água do radiador" className="w-full h-48 object-cover rounded-xl border border-gray-700" />
-                    <label className="absolute bottom-4 right-4 bg-gray-900/80 backdrop-blur-sm p-3 rounded-xl border border-gray-600 outline-none text-white font-bold text-sm uppercase flex items-center cursor-pointer active:bg-gray-800">
-                      <Camera className="w-5 h-5 mr-2 text-yellow-500" />
+                  <div className="relative group">
+                    <img src={waterPhoto} alt="Água do radiador" className="w-full h-48 object-cover rounded-2xl border border-white/10" />
+                    <label className="absolute bottom-4 right-4 bg-[#09090b]/80 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 outline-none text-white font-bold text-[10px] uppercase tracking-widest flex items-center cursor-pointer hover:bg-[#18181b] active:scale-95 transition-all shadow-xl">
+                      <Camera className="w-4 h-4 mr-2 text-amber-500" />
                       Refazer
                       <input type="file" accept="image/*" capture="environment" className="hidden" onChange={e => handleCapture(e, setWaterPhoto)} />
                     </label>
@@ -337,7 +337,7 @@ export const OperatorView: React.FC = () => {
             {panelPhoto && oilPhoto && waterPhoto && (
               <div className="pt-6 animate-in slide-in-from-bottom-8 duration-500">
                 <button 
-                  className="w-full bg-green-500 text-white font-black text-3xl py-6 rounded-2xl shadow-[0_6px_0_#166534] active:translate-y-1 active:shadow-[0_0px_0_#166534] transition-all uppercase tracking-wider disabled:opacity-50 disabled:shadow-none disabled:translate-y-0"
+                  className="w-full bg-gradient-to-b from-emerald-400 to-emerald-500 hover:from-emerald-300 hover:to-emerald-400 text-emerald-950 font-black text-xl py-6 rounded-2xl shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all uppercase tracking-widest disabled:opacity-50 disabled:active:scale-100 disabled:shadow-none border-0"
                   onClick={enviarChecklist}
                   disabled={isSubmitting}
                 >
@@ -349,26 +349,33 @@ export const OperatorView: React.FC = () => {
         )}
 
         {screen === 'C' && (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-8 animate-in zoom-in duration-500 bg-gray-800 p-8 rounded-3xl border border-gray-700 shadow-2xl mt-8">
-             <div className="w-32 h-32 bg-green-500/20 rounded-full flex items-center justify-center">
-               <CheckCircle className="w-24 h-24 text-green-500" />
+          <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-8 animate-in zoom-in duration-500 bg-[#18181b] p-8 sm:p-12 rounded-3xl border border-white/5 shadow-2xl mt-8 relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+             
+             <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/20 relative z-10">
+               <CheckCircle className="w-12 h-12 text-emerald-950" />
              </div>
-             <div className="text-center space-y-4">
-               <h2 className="text-3xl font-black text-white uppercase leading-tight">Máquina Liberada<br/>com Sucesso!</h2>
-               <p className="text-xl text-gray-400 font-medium px-4">Operação autorizada para <strong className="text-yellow-500">{getMachineName()}</strong></p>
+             
+             <div className="text-center space-y-3 relative z-10">
+               <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight leading-tight">Máquina Liberada</h2>
+               <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
+                 Operação autorizada <br/>
+                 <strong className="text-emerald-400 text-sm mt-1 block">{getMachineName()}</strong>
+               </p>
              </div>
-             <div className="pt-8 w-full space-y-4">
+             
+             <div className="pt-8 w-full space-y-3 relative z-10">
                <button 
-                 className="w-full bg-gray-700 text-white font-bold text-xl py-5 rounded-2xl border-2 border-gray-600 hover:bg-gray-600 active:bg-gray-800 transition-colors uppercase tracking-widest"
+                 className="w-full bg-[#09090b] text-white font-bold text-[10px] py-5 rounded-2xl border border-white/10 hover:bg-white/5 active:scale-[0.98] transition-all uppercase tracking-widest shadow-inner shadow-black/50"
                  onClick={resetAll}
                >
-                 Voltar ao Início
+                 Nova Liberação
                </button>
                <button 
-                 className="w-full text-red-500 font-bold text-lg py-4 rounded-2xl border-2 border-red-500/20 hover:bg-red-500/10 active:bg-red-500/20 transition-colors uppercase tracking-widest"
+                 className="w-full text-red-400 font-bold text-[10px] py-4 rounded-xl hover:bg-red-400/10 active:bg-red-400/20 transition-colors uppercase tracking-widest"
                  onClick={logout}
                >
-                 Sair do Sistema
+                 Encerrar Turno
                </button>
              </div>
           </div>

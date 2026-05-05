@@ -67,44 +67,46 @@ export const ManagerLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col font-sans p-6 justify-center items-center relative">
+    <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans p-6 justify-center items-center relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+
       <button 
         onClick={() => showResetPassword ? setShowResetPassword(false) : navigate('/')}
-        className="absolute top-6 left-6 text-gray-500 hover:text-white transition-colors flex items-center gap-2 font-bold uppercase tracking-widest text-sm"
+        className="absolute top-6 left-6 text-zinc-500 hover:text-white transition-colors flex items-center gap-2 font-bold uppercase tracking-widest text-xs z-10"
       >
         <ArrowLeft className="w-5 h-5" /> Voltar
       </button>
 
-      <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 relative z-10">
         
         <div className="text-center space-y-2">
-          <div className="w-20 h-20 bg-yellow-500 rounded-2xl mx-auto flex items-center justify-center shadow-xl mb-6">
-            <Truck className="w-12 h-12 text-gray-900" />
+          <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-amber-600 rounded-3xl mx-auto flex items-center justify-center shadow-lg shadow-amber-500/20 mb-6">
+            <Truck className="w-10 h-10 text-zinc-950" />
           </div>
-          <h1 className="text-3xl font-black text-white uppercase tracking-tight">FrotaCheck</h1>
-          <p className="text-sm font-medium text-gray-500 uppercase tracking-widest">
+          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">FrotaCheck</h1>
+          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
             {showResetPassword ? 'Recuperar Senha' : 'Acesso do Gestor'}
           </p>
         </div>
 
         {showResetPassword ? (
-          <form onSubmit={handleResetPassword} className="bg-gray-800 p-8 rounded-3xl border border-gray-700 shadow-2xl space-y-6">
+          <form onSubmit={handleResetPassword} className="bg-[#18181b] p-8 rounded-3xl border border-white/5 shadow-2xl space-y-6">
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-xl text-sm font-bold text-center">
+              <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-xl text-xs font-bold text-center">
                 {error}
               </div>
             )}
             {resetMessage && (
-              <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 p-4 rounded-xl text-sm font-bold text-center">
+              <div className="bg-[#1DA851]/10 border border-[#1DA851]/20 text-[#1DA851] p-4 rounded-xl text-xs font-bold text-center">
                 {resetMessage}
               </div>
             )}
 
             <div className="space-y-2">
-              <label className="block text-sm font-bold uppercase text-gray-400">E-mail</label>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">E-mail</label>
               <input 
                 type="email"
-                className="w-full h-14 px-4 text-lg bg-gray-900 border border-gray-600 rounded-xl focus:border-yellow-500 focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white transition-all placeholder:text-gray-600"
+                className="w-full h-14 px-4 text-lg bg-[#09090b] border border-white/10 rounded-xl focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/50 text-white transition-all placeholder:text-zinc-600 shadow-inner"
                 placeholder="gestor@empresa.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -113,13 +115,13 @@ export const ManagerLogin: React.FC = () => {
 
             <Button 
               type="submit"
-              className="w-full bg-yellow-500 text-gray-900 hover:bg-yellow-400 font-bold text-lg py-6 uppercase tracking-widest mt-4"
+              className="w-full bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-zinc-950 font-bold text-lg py-6 uppercase tracking-widest mt-4 shadow-lg shadow-amber-500/20 active:scale-[0.98] transition-all border-0"
               disabled={loading}
             >
               Enviar link de recuperação
             </Button>
 
-            <div className="text-center mt-4 pt-2 border-t border-gray-700">
+            <div className="text-center mt-4 pt-6 border-t border-white/5">
               <button 
                 type="button"
                 onClick={() => {
@@ -127,25 +129,25 @@ export const ManagerLogin: React.FC = () => {
                   setError('');
                   setResetMessage('');
                 }}
-                className="text-gray-400 hover:text-white transition-colors text-sm font-bold tracking-widest uppercase"
+                className="text-zinc-400 hover:text-white transition-colors text-xs font-bold tracking-widest uppercase"
               >
                 Voltar ao Login
               </button>
             </div>
           </form>
         ) : (
-          <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-3xl border border-gray-700 shadow-2xl space-y-6">
+          <form onSubmit={handleSubmit} className="bg-[#18181b] p-8 rounded-3xl border border-white/5 shadow-2xl space-y-6">
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-xl text-sm font-bold text-center">
+              <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-xl text-xs font-bold text-center">
                 {error}
               </div>
             )}
 
             <div className="space-y-2">
-              <label className="block text-sm font-bold uppercase text-gray-400">E-mail</label>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">E-mail</label>
               <input 
                 type="email"
-                className="w-full h-14 px-4 text-lg bg-gray-900 border border-gray-600 rounded-xl focus:border-yellow-500 focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white transition-all placeholder:text-gray-600"
+                className="w-full h-14 px-4 text-lg bg-[#09090b] border border-white/10 rounded-xl focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/50 text-white transition-all placeholder:text-zinc-600 shadow-inner"
                 placeholder="gestor@empresa.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -153,22 +155,22 @@ export const ManagerLogin: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-bold uppercase text-gray-400">Senha</label>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Senha</label>
               <input 
                 type="password"
-                className="w-full h-14 px-4 text-lg bg-gray-900 border border-gray-600 rounded-xl focus:border-yellow-500 focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white transition-all placeholder:text-gray-600"
+                className="w-full h-14 px-4 text-lg bg-[#09090b] border border-white/10 rounded-xl focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/50 text-white transition-all placeholder:text-zinc-600 shadow-inner"
                 placeholder="••••••••"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
               />
-              <div className="flex justify-end pt-1">
+              <div className="flex justify-end pt-2">
                 <button 
                   type="button"
                   onClick={() => {
                     setShowResetPassword(true);
                     setError('');
                   }}
-                  className="text-yellow-500 hover:text-yellow-400 text-xs font-bold uppercase tracking-widest transition-colors"
+                  className="text-amber-500 hover:text-amber-400 text-[10px] font-bold uppercase tracking-widest transition-colors"
                 >
                   Esqueceu sua senha?
                 </button>
@@ -177,7 +179,7 @@ export const ManagerLogin: React.FC = () => {
 
             <Button 
               type="submit"
-              className="w-full bg-yellow-500 text-gray-900 hover:bg-yellow-400 font-bold text-lg py-6 uppercase tracking-widest mt-4"
+              className="w-full bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-zinc-950 font-bold text-lg py-6 uppercase tracking-widest mt-4 shadow-lg shadow-amber-500/20 active:scale-[0.98] transition-all border-0"
               disabled={loading}
             >
               {loading ? 'Acessando...' : 'Entrar no Painel'}
