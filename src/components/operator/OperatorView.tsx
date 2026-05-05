@@ -1,11 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Camera, CheckCircle, ChevronRight, Truck } from 'lucide-react';
+import { Camera, CheckCircle, ChevronRight, Truck, Download } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { collection, onSnapshot, query, where, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase/config';
 import { Machine } from '../../types';
 import { useAuth } from '../../context/AuthContext';
+
+import { usePWAInstall } from '../../hooks/usePWAInstall';
 
 export const OperatorView: React.FC = () => {
   const [screen, setScreen] = useState<'A' | 'B' | 'C'>('A');
@@ -22,6 +24,7 @@ export const OperatorView: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { user, empresa, operatorData, logout } = useAuth();
+  const { isInstallable, installPWA } = usePWAInstall();
   
   const operadorId = operatorData?.operadorId || '';
   const operadorNome = operatorData?.nomeOperador || '';
@@ -173,13 +176,25 @@ export const OperatorView: React.FC = () => {
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col font-sans">
       
       {/* HEADER */}
-      <header className="bg-gray-800 p-6 shadow-md border-b border-gray-700 flex items-center shrink-0">
-        <div className="w-14 h-14 bg-yellow-500 flex items-center justify-center rounded-lg mr-4 shrink-0 shadow-lg">
-          <Truck className="w-8 h-8 text-gray-900" />
+      <header className="bg-gray-800 p-6 shadow-md border-b border-gray-700 flex items-center justify-between shrink-0">
+        <div className="flex items-center">
+          <div className="w-14 h-14 bg-yellow-500 flex items-center justify-center rounded-lg mr-4 shrink-0 shadow-lg">
+            <Truck className="w-8 h-8 text-gray-900" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-black text-yellow-500 uppercase tracking-widest leading-none">FrotaCheck</h1>
+            <p className="text-sm font-medium text-gray-400 mt-1 uppercase tracking-wider">Terminal do Operador</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-black text-yellow-500 uppercase tracking-widest leading-none">FrotaCheck</h1>
-          <p className="text-sm font-medium text-gray-400 mt-1 uppercase tracking-wider">Terminal do Operador</p>
+        <div className="flex items-center gap-4">
+          {isInstallable && (
+            <Button variant="outline" className="hidden sm:flex text-xs font-bold uppercase tracking-widest border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/10 gap-2 items-center" onClick={installPWA}>
+              <Download className="w-4 h-4" /> Instalar App
+            </Button>
+          )}
+          <Button variant="ghost" className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-red-400 hover:bg-red-400/10 transition-colors" onClick={logout}>
+            Sair
+          </Button>
         </div>
       </header>
 

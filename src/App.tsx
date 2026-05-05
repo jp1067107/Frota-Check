@@ -2,8 +2,9 @@ import React, { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Button } from './components/ui/Button';
-import { Truck } from 'lucide-react';
+import { Truck, Download } from 'lucide-react';
 import { processSyncQueue } from './utils/syncQueue';
+import { usePWAInstall } from './hooks/usePWAInstall';
 
 const OperatorView = lazy(() => import('./components/operator/OperatorView').then(m => ({ default: m.OperatorView })));
 const ManagerDashboard = lazy(() => import('./components/manager/ManagerDashboard').then(m => ({ default: m.ManagerDashboard })));
@@ -15,6 +16,8 @@ const ResetPassword = lazy(() => import('./components/auth/ResetPassword').then(
 
 const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
+  const { isInstallable, installPWA } = usePWAInstall();
+
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col justify-center items-center text-white p-6 font-sans">
       <div className="w-24 h-24 bg-yellow-500 rounded-3xl flex items-center justify-center shadow-2xl mb-8">
@@ -33,6 +36,12 @@ const HomeScreen: React.FC = () => {
         <Button variant="ghost" size="lg" className="mt-4 h-12 text-sm font-bold text-gray-500 hover:text-yellow-500 uppercase tracking-widest" onClick={() => navigate('/manager-register')}>
           Cadastrar Empresa
         </Button>
+        
+        {isInstallable && (
+          <Button variant="outline" size="lg" className="mt-2 h-14 text-sm font-bold border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/10 uppercase tracking-widest flex items-center justify-center gap-2" onClick={installPWA}>
+            <Download className="w-5 h-5" /> Instalar App
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { collection, onSnapshot, query, where, setDoc, doc, deleteDoc, serverTimestamp, updateDoc, addDoc } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, doc, deleteDoc, updateDoc, addDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 import { Machine, Checklist, Operador } from '../../types';
 import { format, isSameDay, startOfDay } from 'date-fns';
-import { AlertCircle, CheckCircle, Clock, Plus, Settings2, Trash2, Eye, EyeOff, Users, Truck } from 'lucide-react';
+import { AlertCircle, CheckCircle, Clock, Plus, Settings2, Trash2, Eye, EyeOff, Users, Truck, Download } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { handleFirestoreError, OperationType } from '../../firebase/errorHandler';
 import { useAuth } from '../../context/AuthContext';
 import { MachineAuditModal } from './MachineAuditModal';
+import { usePWAInstall } from '../../hooks/usePWAInstall';
 
 export const ManagerDashboard: React.FC = () => {
   const [machines, setMachines] = useState<Machine[]>([]);
   const [checklists, setChecklists] = useState<Checklist[]>([]);
   const [operadores, setOperadores] = useState<Operador[]>([]);
   const [activeTab, setActiveTab] = useState<'frota' | 'equipe' | 'empresa'>('frota');
+  const { isInstallable, installPWA } = usePWAInstall();
   
   // Modals / Overlays
   const [addingMachine, setAddingMachine] = useState(false);
@@ -218,7 +220,12 @@ export const ManagerDashboard: React.FC = () => {
             </span>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
+            {isInstallable && (
+              <Button variant="outline" className="hidden sm:flex text-xs font-bold uppercase tracking-widest text-amber-500 border-amber-500/20 hover:bg-amber-500/10 gap-2 items-center" onClick={installPWA}>
+                <Download className="w-3 h-3" /> Instalar App
+              </Button>
+            )}
             <Button variant="ghost" className="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-red-400 hover:bg-red-400/10 transition-colors" onClick={logout}>
               Sair
             </Button>
