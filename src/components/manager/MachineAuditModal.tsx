@@ -123,26 +123,28 @@ export const MachineAuditModal: React.FC<Props> = ({ machine, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-gray-900 border-l border-gray-700 w-full max-w-2xl h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
+      <div className="bg-[#09090b] border-l border-white/10 w-full max-w-2xl h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
         
         {/* Header */}
-        <div className="p-6 border-b border-gray-800 shrink-0 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <h2 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-3">
+        <div className="p-6 sm:p-8 pt-10 sm:pt-12 border-b border-white/5 shrink-0 space-y-6">
+          <div className="flex items-start justify-between">
+            <div className="space-y-2">
+              <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
                 {machine.name}
-                <span className={`text-xs px-3 py-1 rounded-full border font-bold tracking-widest uppercase ${getStatusColor(machine.status)}`}>
+              </h2>
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className={`text-[10px] px-3 py-1 rounded-full border font-bold tracking-widest uppercase ${getStatusColor(machine.status)}`}>
                   {getStatusLabel(machine.status)}
                 </span>
-              </h2>
-              <p className="text-gray-400 font-medium text-sm">
-                ID/PIN: <span className="font-mono text-gray-300">{machine.pin || 'N/A'}</span>
-              </p>
+                <span className="text-zinc-500 font-medium text-xs bg-white/5 px-2 py-1 rounded-md">
+                  ID: <span className="font-mono text-zinc-300">{machine.id.split('_')[1]?.toUpperCase() || machine.id.toUpperCase()}</span>
+                </span>
+              </div>
             </div>
             <button 
               onClick={onClose}
-              className="w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+              className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors border border-white/5"
             >
               <X className="w-5 h-5" />
             </button>
@@ -154,15 +156,15 @@ export const MachineAuditModal: React.FC<Props> = ({ machine, onClose }) => {
               <Button 
                 onClick={() => handleUpdateStatus('maintenance')}
                 disabled={updating}
-                className="flex-1 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-gray-900 border border-amber-500/20 font-bold uppercase tracking-widest"
+                className="flex-1 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-zinc-950 border border-amber-500/20 font-bold uppercase tracking-widest text-xs py-5 rounded-xl transition-all"
               >
-                {updating ? 'Atualizando...' : 'Enviar para Manutenção'}
+                {updating ? 'Atualizando...' : 'Enviar para Oficina'}
               </Button>
             ) : machine.status === 'maintenance' ? (
               <Button 
                 onClick={() => handleUpdateStatus('active')}
                 disabled={updating}
-                className="flex-1 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-gray-900 border border-emerald-500/20 font-bold uppercase tracking-widest"
+                className="flex-1 bg-[#1DA851]/10 text-[#1DA851] hover:bg-[#1DA851] hover:text-[#09090b] border border-[#1DA851]/20 font-bold uppercase tracking-widest text-xs py-5 rounded-xl transition-all"
               >
                 {updating ? 'Atualizando...' : 'Retornar à Operação'}
               </Button>
@@ -173,7 +175,7 @@ export const MachineAuditModal: React.FC<Props> = ({ machine, onClose }) => {
               disabled={exporting || checklists.length === 0}
               variant="outline"
               icon={FileText}
-              className="px-6 border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white font-bold uppercase tracking-widest"
+              className="px-6 border-white/10 text-zinc-300 bg-white/5 hover:bg-white/10 hover:text-white font-bold uppercase tracking-widest text-xs py-5 rounded-xl transition-all"
             >
               {exporting ? 'Gerando...' : 'Exportar PDF'}
             </Button>
@@ -181,36 +183,36 @@ export const MachineAuditModal: React.FC<Props> = ({ machine, onClose }) => {
         </div>
 
         {/* Timeline */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
-          <h3 className="text-sm font-bold uppercase text-gray-500 tracking-widest mb-4">Histórico de Checklists</h3>
+        <div className="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6">
+          <h3 className="text-xs font-bold uppercase text-zinc-500 tracking-widest mb-6">Histórico de Checklists</h3>
           
           {loading ? (
-            <div className="py-12 text-center text-gray-500 font-medium animate-pulse">
+            <div className="py-12 text-center text-zinc-500 font-medium animate-pulse text-sm">
               Carregando histórico...
             </div>
           ) : checklists.length === 0 ? (
-            <div className="py-12 text-center border-2 border-dashed border-gray-800 rounded-2xl">
-              <Clock className="w-8 h-8 text-gray-700 mx-auto mb-3" />
-              <p className="text-gray-500 font-medium">Nenhum checklist registrado para esta máquina.</p>
+            <div className="py-12 text-center border border-dashed border-white/10 rounded-2xl bg-[#18181b]/50">
+              <Clock className="w-8 h-8 text-zinc-600 mx-auto mb-3" />
+              <p className="text-zinc-500 font-medium text-sm">Nenhum checklist registrado para esta máquina.</p>
             </div>
           ) : (
-            <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[17px] before:w-px before:bg-gray-800">
+            <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[17px] before:w-px before:bg-white/5">
               {checklists.map((checklist, index) => (
                 <div key={checklist.id} className="relative flex gap-6 z-10">
-                  <div className="w-9 h-9 rounded-full bg-gray-900 border-2 border-gray-700 flex items-center justify-center shrink-0 mt-1">
-                    <CheckCircle className="w-4 h-4 text-emerald-500" />
+                  <div className="w-9 h-9 rounded-full bg-[#09090b] border border-white/10 shadow-inner flex items-center justify-center shrink-0 mt-1">
+                    <CheckCircle className="w-4 h-4 text-[#1DA851]" />
                   </div>
-                  <div className="flex-1 bg-gray-800 rounded-2xl p-5 border border-gray-700 hover:border-gray-600 transition-colors">
+                  <div className="flex-1 bg-[#18181b] rounded-2xl p-5 border border-white/5 shadow-lg shadow-black/20 hover:bg-[#18181b]/80 transition-colors">
                     <div className="flex items-center justify-between mb-4">
                       <div className="space-y-1">
-                        <span className="text-sm font-bold text-gray-300">
+                        <span className="text-sm font-bold text-white">
                           {formatDate(checklist.dataHora)}
                         </span>
-                        <div className="text-xs text-gray-500 font-medium">
-                          Operador: <span className="text-gray-400 font-mono">{checklist.operadorNome || checklist.operadorId}</span>
+                        <div className="text-xs text-zinc-500 font-medium uppercase tracking-widest">
+                          Operador: <span className="text-zinc-300 font-mono">{checklist.operadorNome || checklist.operadorId}</span>
                         </div>
                       </div>
-                      <span className="text-xs px-2 py-1 bg-emerald-500/10 text-emerald-500 rounded border border-emerald-500/20 font-bold uppercase tracking-wider">
+                      <span className="text-[10px] px-2 py-1 bg-[#1DA851]/10 text-[#1DA851] rounded-md border border-[#1DA851]/20 font-bold uppercase tracking-widest">
                         Verificado
                       </span>
                     </div>
@@ -218,38 +220,38 @@ export const MachineAuditModal: React.FC<Props> = ({ machine, onClose }) => {
                     {checklist.fotos && (
                       <div className="grid grid-cols-3 gap-3">
                         <div 
-                          className="aspect-square bg-gray-900 rounded-xl border border-gray-700 overflow-hidden relative group cursor-pointer"
+                          className="aspect-square bg-[#09090b] rounded-xl border border-white/5 overflow-hidden relative group cursor-pointer shadow-inner"
                           onClick={() => setZoomedImage(checklist.fotos.painel)}
                         >
-                          <img src={checklist.fotos.painel} alt="Painel" className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <img src={checklist.fotos.painel} alt="Painel" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                             <ZoomIn className="text-white w-6 h-6" />
                           </div>
                         </div>
                         <div 
-                          className="aspect-square bg-gray-900 rounded-xl border border-gray-700 overflow-hidden relative group cursor-pointer"
+                          className="aspect-square bg-[#09090b] rounded-xl border border-white/5 overflow-hidden relative group cursor-pointer shadow-inner"
                           onClick={() => setZoomedImage(checklist.fotos.oleo)}
                         >
-                          <img src={checklist.fotos.oleo} alt="Óleo" className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <img src={checklist.fotos.oleo} alt="Óleo" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                             <ZoomIn className="text-white w-6 h-6" />
                           </div>
                         </div>
                         <div 
-                          className="aspect-square bg-gray-900 rounded-xl border border-gray-700 overflow-hidden relative group cursor-pointer"
+                          className="aspect-square bg-[#09090b] rounded-xl border border-white/5 overflow-hidden relative group cursor-pointer shadow-inner"
                           onClick={() => setZoomedImage(checklist.fotos.radiador)}
                         >
-                          <img src={checklist.fotos.radiador} alt="Radiador" className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <img src={checklist.fotos.radiador} alt="Radiador" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                             <ZoomIn className="text-white w-6 h-6" />
                           </div>
                         </div>
                       </div>
                     )}
-                    <div className="grid grid-cols-3 gap-3 mt-2 text-center px-1">
-                      <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Painel/Horímetro</span>
-                      <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Nível de Óleo</span>
-                      <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Água Radiador</span>
+                    <div className="grid grid-cols-3 gap-3 mt-3 text-center px-1">
+                      <span className="text-[9px] uppercase font-bold text-zinc-500 tracking-widest">Painel/Hor.</span>
+                      <span className="text-[9px] uppercase font-bold text-zinc-500 tracking-widest">Nível Óleo</span>
+                      <span className="text-[9px] uppercase font-bold text-zinc-500 tracking-widest">Radiador</span>
                     </div>
                   </div>
                 </div>

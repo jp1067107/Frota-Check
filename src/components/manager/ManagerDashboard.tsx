@@ -201,134 +201,152 @@ export const ManagerDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-6 sm:p-10 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans selection:bg-amber-500/30">
       
-      <div className="max-w-7xl mx-auto w-full space-y-8">
-        <header className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-end gap-6 pb-6 border-b border-gray-700">
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white flex items-center gap-4">
-              FrotaCheck <span className="text-yellow-500 font-normal tracking-widest text-sm sm:text-base uppercase">Centro de Comando</span>
+      {/* Premium Top Navigation */}
+      <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-[#09090b]/80 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+              <Truck className="w-4 h-4 text-zinc-950" />
+            </div>
+            <h1 className="text-xl font-bold tracking-tight text-white">
+              Frota<span className="text-amber-500">Check</span>
             </h1>
-            <p className="text-gray-400 mt-2 text-sm sm:text-base font-semibold uppercase tracking-wider flex items-center gap-2">
-              <span className="flex items-center gap-1"><Truck className="w-4 h-4"/> {machines.length} Máquina(s)</span>
-              <span className="text-gray-600">|</span>
-              <span className="flex items-center gap-1"><Users className="w-4 h-4"/> {operadores.length} Operador(es)</span>
-            </p>
+            <span className="hidden sm:inline-block ml-4 px-2.5 py-1 rounded-full bg-[#18181b] border border-white/5 text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+              Centro de Comando
+            </span>
           </div>
           
-          <div className="flex gap-4 w-full sm:w-auto">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" className="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-red-400 hover:bg-red-400/10 transition-colors" onClick={logout}>
+              Sair
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-8 space-y-8">
+        
+        {/* Page Header & Actions */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative">
+          <div>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white">Visão Geral.</h2>
+            <p className="text-zinc-400 mt-2 text-sm font-medium flex items-center gap-2">
+              <span className="flex items-center gap-1 font-mono text-zinc-300 bg-white/5 px-2 py-0.5 rounded"><Truck className="w-3.5 h-3.5"/> {machines.length}</span> Máquinas
+              <span className="text-zinc-700">/</span>
+              <span className="flex items-center gap-1 font-mono text-zinc-300 bg-white/5 px-2 py-0.5 rounded"><Users className="w-3.5 h-3.5"/> {operadores.length}</span> Operadores
+            </p>
+          </div>
+
+          <div className="flex gap-3 w-full md:w-auto">
             {activeTab === 'frota' && (
-              <Button className="w-full sm:w-auto text-sm bg-yellow-500 text-gray-900 hover:bg-yellow-400 font-bold tracking-widest uppercase" onClick={() => setAddingMachine(true)} icon={Plus}>
+              <Button className="w-full sm:w-auto text-sm bg-gradient-to-b from-amber-400 to-amber-500 text-zinc-950 hover:from-amber-300 hover:to-amber-400 font-bold tracking-widest uppercase shadow-lg shadow-amber-500/20 border-0" onClick={() => setAddingMachine(true)} icon={Plus}>
                 Nova Máquina
               </Button>
             )}
             {activeTab === 'equipe' && (
-              <Button className="w-full sm:w-auto text-sm bg-yellow-500 text-gray-900 hover:bg-yellow-400 font-bold tracking-widest uppercase" onClick={() => setAddingOperador(true)} icon={Plus}>
+              <Button className="w-full sm:w-auto text-sm bg-gradient-to-b from-amber-400 to-amber-500 text-zinc-950 hover:from-amber-300 hover:to-amber-400 font-bold tracking-widest uppercase shadow-lg shadow-amber-500/20 border-0" onClick={() => setAddingOperador(true)} icon={Plus}>
                 Novo Operador
               </Button>
             )}
-            <Button variant="outline" className="w-full sm:w-auto text-sm border-gray-700 text-gray-400 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/50 font-bold tracking-widest uppercase" onClick={logout}>
-              Sair
-            </Button>
           </div>
-        </header>
+        </div>
 
-        <div className="flex gap-4 border-b border-gray-800 pb-px overflow-x-auto">
+        {/* Premium Pills Navigation */}
+        <div className="inline-flex items-center p-1 bg-[#18181b] border border-white/5 rounded-2xl overflow-x-auto max-w-full hide-scrollbar">
           <button 
-            className={`pb-4 px-2 font-bold text-sm uppercase tracking-widest transition-colors relative whitespace-nowrap ${activeTab === 'frota' ? 'text-yellow-500' : 'text-gray-500 hover:text-gray-300'}`}
+            className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-200 whitespace-nowrap flex items-center gap-2 ${activeTab === 'frota' ? 'bg-[#27272a] text-white shadow-sm border border-white/5' : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'}`}
             onClick={() => setActiveTab('frota')}
           >
-            Minha Frota
-            {activeTab === 'frota' && <span className="absolute bottom-0 left-0 w-full h-1 bg-yellow-500 rounded-t-full"></span>}
+            <Truck className="w-4 h-4"/> Minha Frota
           </button>
           <button 
-            className={`pb-4 px-2 font-bold text-sm uppercase tracking-widest transition-colors relative whitespace-nowrap ${activeTab === 'equipe' ? 'text-yellow-500' : 'text-gray-500 hover:text-gray-300'}`}
+            className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-200 whitespace-nowrap flex items-center gap-2 ${activeTab === 'equipe' ? 'bg-[#27272a] text-white shadow-sm border border-white/5' : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'}`}
             onClick={() => setActiveTab('equipe')}
           >
-            Minha Equipe
-            {activeTab === 'equipe' && <span className="absolute bottom-0 left-0 w-full h-1 bg-yellow-500 rounded-t-full"></span>}
+            <Users className="w-4 h-4"/> Minha Equipe
           </button>
           <button 
-            className={`pb-4 px-2 font-bold text-sm uppercase tracking-widest transition-colors relative whitespace-nowrap ${activeTab === 'empresa' ? 'text-yellow-500' : 'text-gray-500 hover:text-gray-300'}`}
+            className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-200 whitespace-nowrap flex items-center gap-2 ${activeTab === 'empresa' ? 'bg-[#27272a] text-white shadow-sm border border-white/5' : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'}`}
             onClick={() => setActiveTab('empresa')}
           >
-            Minha Empresa
-            {activeTab === 'empresa' && <span className="absolute bottom-0 left-0 w-full h-1 bg-yellow-500 rounded-t-full"></span>}
+            <Settings2 className="w-4 h-4"/> Empresa
           </button>
         </div>
 
         {addingMachine && (
-          <div className="fixed inset-0 z-50 bg-gray-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-gray-900 border border-gray-700 p-8 rounded-3xl max-w-sm w-full shadow-2xl space-y-6">
+          <div className="fixed inset-0 z-50 bg-[#09090b]/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-[#18181b] border border-white/5 p-8 rounded-3xl max-w-sm w-full shadow-2xl space-y-6">
               <h2 className="text-2xl font-black text-white uppercase tracking-tight">Nova Máquina</h2>
               
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="block text-sm font-bold uppercase text-gray-400">Nome/Modelo</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Nome/Modelo</label>
                   <input 
                     type="text" 
                     placeholder="Ex: Retroescavadeira 05" 
-                    className="w-full bg-gray-900 border border-gray-600 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-yellow-500 transition-all font-medium placeholder:text-gray-600"
+                    className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all font-medium placeholder:text-zinc-700"
                     value={newMachineName}
                     onChange={e => setNewMachineName(e.target.value)}
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="block text-sm font-bold uppercase text-gray-400">Placa/Identificação</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Placa/Identificação</label>
                   <input 
                     type="text"
                     placeholder="Ex: TX-9090" 
-                    className="w-full bg-gray-900 border border-gray-600 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-yellow-500 transition-all font-medium placeholder:text-gray-600"
+                    className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all font-medium placeholder:text-zinc-700"
                     value={newMachinePlaca}
                     onChange={e => setNewMachinePlaca(e.target.value)}
                   />
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-4">
-                <Button variant="ghost" className="flex-1 font-bold tracking-wider" onClick={() => setAddingMachine(false)}>Cancelar</Button>
-                <Button className="flex-1 font-bold tracking-wider bg-yellow-500 text-gray-900 hover:bg-yellow-400" onClick={handleAddMachine}>Salvar</Button>
+              <div className="flex gap-3 pt-6">
+                <Button variant="ghost" className="flex-1 font-bold tracking-wider text-zinc-400 hover:text-white" onClick={() => setAddingMachine(false)}>Cancelar</Button>
+                <Button className="flex-1 font-bold tracking-wider bg-gradient-to-b from-amber-400 to-amber-500 text-zinc-950 hover:from-amber-300 hover:to-amber-400 border-0" onClick={handleAddMachine}>Salvar</Button>
               </div>
             </div>
           </div>
         )}
 
         {addingOperador && (
-          <div className="fixed inset-0 z-50 bg-gray-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-gray-900 border border-gray-700 p-8 rounded-3xl max-w-sm w-full shadow-2xl space-y-6">
+          <div className="fixed inset-0 z-50 bg-[#09090b]/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-[#18181b] border border-white/5 p-8 rounded-3xl max-w-sm w-full shadow-2xl space-y-6">
               <h2 className="text-2xl font-black text-white uppercase tracking-tight">Novo Operador</h2>
               
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="block text-sm font-bold uppercase text-gray-400">Nome do Operador</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Nome do Operador</label>
                   <input 
                     type="text" 
                     placeholder="Ex: João Batista" 
-                    className="w-full bg-gray-900 border border-gray-600 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-yellow-500 transition-all font-medium placeholder:text-gray-600"
+                    className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all font-medium placeholder:text-zinc-700"
                     value={newOperadorName}
                     onChange={e => setNewOperadorName(e.target.value)}
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="block text-sm font-bold uppercase text-gray-400">PIN de Acesso</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">PIN de Acesso</label>
                   <input 
                     type="password"
                     inputMode="numeric"
                     pattern="[0-9]*"
                     maxLength={4}
                     placeholder="****" 
-                    className="w-full bg-gray-900 border border-gray-600 rounded-xl px-4 py-4 text-3xl tracking-[0.5em] text-center font-black text-yellow-500 focus:outline-none focus:border-yellow-500 transition-all placeholder:text-gray-600"
+                    className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-4 text-3xl tracking-[0.5em] text-center font-black text-amber-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all placeholder:text-zinc-800"
                     value={newOperadorPin}
                     onChange={e => setNewOperadorPin(e.target.value.slice(0, 4))}
                   />
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-4">
-                <Button variant="ghost" className="flex-1 font-bold tracking-wider" onClick={() => setAddingOperador(false)}>Cancelar</Button>
-                <Button className="flex-1 font-bold tracking-wider bg-yellow-500 text-gray-900 hover:bg-yellow-400" onClick={handleAddOperador}>Salvar</Button>
+              <div className="flex gap-3 pt-6">
+                <Button variant="ghost" className="flex-1 font-bold tracking-wider text-zinc-400 hover:text-white" onClick={() => setAddingOperador(false)}>Cancelar</Button>
+                <Button className="flex-1 font-bold tracking-wider bg-gradient-to-b from-amber-400 to-amber-500 text-zinc-950 hover:from-amber-300 hover:to-amber-400 border-0" onClick={handleAddOperador}>Salvar</Button>
               </div>
             </div>
           </div>
@@ -343,62 +361,62 @@ export const ManagerDashboard: React.FC = () => {
             let cardClasses = "";
             let borderColor = "";
             if (machine.status === 'maintenance') {
-              cardClasses = "bg-gray-800 opacity-70";
-              borderColor = "border-l-4 border-yellow-500 shadow shadow-yellow-500/10";
+              cardClasses = "bg-[#18181b]/60 backdrop-blur-sm grayscale-[0.3]";
+              borderColor = "border-amber-500/50 shadow shadow-amber-500/10";
             } else if (checklistToday) {
-              cardClasses = "bg-gray-800";
-              borderColor = "border-l-4 border-green-500 shadow shadow-green-500/10";
+              cardClasses = "bg-[#18181b]";
+              borderColor = "border-[#1DA851]/50 shadow shadow-[#1DA851]/10";
             } else {
-              cardClasses = "bg-gray-800";
-              borderColor = "border-l-4 border-red-500 shadow-lg shadow-red-500/20";
+              cardClasses = "bg-[#18181b]";
+              borderColor = "border-red-500/50 shadow shadow-red-500/10";
             }
             
             return (
               <div 
                 key={machine.id} 
-                className={`rounded-xl p-6 flex flex-col transition-all border border-gray-700 hover:bg-gray-750 cursor-pointer ${cardClasses} ${borderColor}`}
+                className={`rounded-2xl p-6 flex flex-col transition-all duration-300 border hover:bg-[#18181b]/80 cursor-pointer ${cardClasses} border-t-white/5 border-r-white/5 border-b-white/5 border-l-4 ${borderColor}`}
                 onClick={() => setSelectedAuditMachine(machine)}
               >
                 <div className="flex justify-between items-start mb-6">
                   <div>
-                    <h3 className="text-xl font-bold uppercase tracking-tight text-white">{machine.name}</h3>
-                    <p className="text-gray-400 text-xs font-mono mt-1 opacity-60">ID: {machine.id.toUpperCase()}</p>
+                    <h3 className="text-lg font-black uppercase tracking-tight text-white">{machine.name}</h3>
+                    <p className="text-zinc-500 text-xs font-mono mt-1 font-medium bg-white/5 inline-flex px-1.5 py-0.5 rounded">ID: {machine.id.split('_')[1]?.toUpperCase() || machine.id.toUpperCase()}</p>
                   </div>
-                  <div className="flex items-center gap-2 bg-gray-900/50 p-1.5 rounded-lg border border-gray-800/50">
+                  <div className="flex items-center gap-2 bg-[#09090b] p-1.5 rounded-xl border border-white/5 shadow-inner">
                     <button 
                       onClick={(e) => { e.stopPropagation(); setMachineToDelete(machine); }} 
-                      className="text-gray-500 hover:text-red-500 transition-colors p-1 relative z-10" 
+                      className="text-zinc-600 hover:text-red-500 transition-colors p-1" 
                       title="Excluir máquina"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
-                    <div className="w-px h-6 bg-gray-700 mx-1"></div>
-                    {machine.status === 'maintenance' && <Settings2 className="w-7 h-7 text-yellow-500 animate-[spin_4s_linear_infinite]" />}
-                    {machine.status !== 'maintenance' && checklistToday && <CheckCircle className="w-7 h-7 text-green-500" />}
+                    <div className="w-px h-6 bg-white/5 mx-0.5"></div>
+                    {machine.status === 'maintenance' && <Settings2 className="w-7 h-7 text-amber-500 animate-[spin_4s_linear_infinite]" />}
+                    {machine.status !== 'maintenance' && checklistToday && <CheckCircle className="w-7 h-7 text-[#1DA851]" />}
                     {machine.status !== 'maintenance' && !checklistToday && <AlertCircle className="w-7 h-7 text-red-500" />}
                   </div>
                 </div>
 
                 <div className="flex-1 mt-2">
                   {machine.status === 'maintenance' && (
-                    <div className="flex flex-col h-full justify-center items-center py-8">
-                      <div className="bg-yellow-500/10 border border-yellow-500/20 px-4 py-2 rounded-lg">
-                        <p className="text-sm font-black text-yellow-500 uppercase tracking-widest text-center">Máquina na Oficina</p>
+                    <div className="flex flex-col h-full justify-center items-center py-6">
+                      <div className="bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-xl">
+                        <p className="text-xs font-black text-amber-500 uppercase tracking-widest text-center">Máquina na Oficina</p>
                       </div>
                     </div>
                   )}
                   
                   {machine.status !== 'maintenance' && checklistToday && (
                     <div className="space-y-4">
-                      <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-xl">
-                        <p className="text-[10px] font-black text-green-500 uppercase tracking-widest mb-3">Auditoria Concluída</p>
+                      <div className="bg-[#1DA851]/10 border border-[#1DA851]/20 p-4 rounded-xl">
+                        <p className="text-[10px] font-black text-[#1DA851] uppercase tracking-widest mb-3">Auditoria Concluída</p>
                         <div className="space-y-2">
-                          <p className="text-sm font-semibold text-gray-200 flex justify-between items-center bg-gray-900/40 p-2 rounded-md">
-                            <span className="text-gray-500 text-xs uppercase tracking-wider">Operador</span> 
+                          <p className="text-sm font-semibold text-zinc-300 flex justify-between items-center bg-[#09090b]/50 p-2.5 rounded-lg border border-white/5">
+                            <span className="text-zinc-500 text-[10px] uppercase tracking-wider font-bold">Operador</span> 
                             <span>{checklistToday.operadorNome || checklistToday.operadorId}</span>
                           </p>
-                          <p className="text-sm font-semibold text-gray-200 flex justify-between items-center bg-gray-900/40 p-2 rounded-md">
-                            <span className="text-gray-500 text-xs uppercase tracking-wider">Liberada às</span> 
+                          <p className="text-sm font-semibold text-zinc-300 flex justify-between items-center bg-[#09090b]/50 p-2.5 rounded-lg border border-white/5">
+                            <span className="text-zinc-500 text-[10px] uppercase tracking-wider font-bold">Liberada às</span> 
                             <span>{format(getSafeDate(checklistToday.dataHora), 'HH:mm')}</span>
                           </p>
                         </div>
@@ -408,33 +426,33 @@ export const ManagerDashboard: React.FC = () => {
                   
                   {machine.status !== 'maintenance' && !checklistToday && (
                     <div className="space-y-4">
-                      <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl text-center py-6">
-                        <p className="text-sm font-black text-red-500 uppercase tracking-wider">Checklist não recebido!</p>
-                        <p className="text-xs text-gray-400 mt-2 font-medium">Aguardando envio do operador para liberação.</p>
+                      <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl text-center py-6 backdrop-blur-sm">
+                        <p className="text-xs font-black text-red-500 uppercase tracking-widest">Aguardando Checklist</p>
+                        <p className="text-[11px] text-red-400/80 mt-2 font-medium">A máquina está bloqueada até o envio.</p>
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="pt-6 mt-6 border-t border-gray-700/50 flex flex-col gap-3">
+                <div className="pt-6 mt-6 border-t border-white/5 flex flex-col gap-2 relative z-20">
                   {machine.status !== 'maintenance' && checklistToday && (
-                    <Button variant="secondary" className="w-full text-xs font-bold uppercase tracking-wider bg-gray-700 hover:bg-gray-600 text-white border-0 py-5" onClick={() => setViewChecklistPhotos(checklistToday)}>
-                      Auditoria / Ver Fotos
+                    <Button variant="secondary" className="w-full text-xs font-bold uppercase tracking-wider bg-white/5 hover:bg-white/10 text-white border-0 py-5 rounded-xl transition-all" onClick={(e) => { e.stopPropagation(); setViewChecklistPhotos(checklistToday); }}>
+                      Ver Auditoria
                     </Button>
                   )}
 
                   {machine.status !== 'maintenance' && !checklistToday && (
-                     <a href={`https://wa.me/?text=Olá! Por favor, lembre-se de enviar o checklist da ${machine.name} hoje.`} target="_blank" rel="noopener noreferrer" className="w-full inline-flex items-center justify-center rounded-md text-xs font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 min-h-[40px] py-2 bg-[#25D366] text-gray-900 hover:bg-[#1DA851] shadow-lg shadow-[#25D366]/10 text-center flex-wrap break-words">
+                     <a href={`https://wa.me/?text=Olá! Por favor, lembre-se de enviar o checklist da ${machine.name} hoje.`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="w-full inline-flex items-center justify-center rounded-xl text-[11px] font-bold uppercase tracking-widest transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 min-h-[40px] py-4 bg-[#25D366] text-zinc-950 hover:bg-[#1DA851] shadow-lg shadow-[#25D366]/20 border-0">
                         Acionar Operador
                      </a>
                   )}
 
                   {machine.status !== 'maintenance' ? (
-                     <Button variant="ghost" className="text-gray-400 hover:text-yellow-500 hover:bg-yellow-500/10 transition-colors w-full uppercase text-[10px] font-bold tracking-widest mt-1" onClick={() => setMachineStatus(machine, 'maintenance')}>
+                     <Button variant="ghost" className="text-zinc-500 hover:text-amber-500 hover:bg-amber-500/10 transition-colors w-full uppercase text-[10px] font-bold tracking-widest mt-1 rounded-lg" onClick={(e) => { e.stopPropagation(); setMachineStatus(machine, 'maintenance'); }}>
                        Enviar para Oficina
                      </Button>
                   ) : (
-                     <Button variant="outline" className="w-full border-gray-600 hover:bg-gray-700 text-xs uppercase font-bold tracking-widest text-gray-300 py-5" onClick={() => setMachineStatus(machine, 'active')}>
+                     <Button variant="outline" className="w-full border-white/10 bg-white/5 hover:bg-white/10 text-xs uppercase font-bold tracking-widest text-zinc-300 py-5 rounded-xl transition-all" onClick={(e) => { e.stopPropagation(); setMachineStatus(machine, 'active'); }}>
                        Devolver à Frota
                      </Button>
                   )}
@@ -448,30 +466,30 @@ export const ManagerDashboard: React.FC = () => {
         {activeTab === 'equipe' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {operadores.map(op => (
-              <div key={op.id} className="bg-gray-800 border border-gray-700 rounded-xl p-6 flex flex-col items-center text-center relative hover:border-gray-600 transition-colors">
+              <div key={op.id} className="bg-[#18181b] border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center relative hover:bg-[#18181b]/80 transition-colors shadow-lg shadow-black/20">
                 <button 
                   onClick={() => handleDeleteOperador(op.id)}
-                  className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition-colors p-1"
+                  className="absolute top-4 right-4 text-zinc-600 hover:text-red-500 transition-colors p-1"
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
-                <div className="w-16 h-16 rounded-full bg-gray-900 border-2 border-gray-700 flex items-center justify-center mb-4">
-                  <span className="text-xl font-black text-gray-400 uppercase">{(op.nome || 'OP').substring(0, 2)}</span>
+                <div className="w-16 h-16 rounded-full bg-[#09090b] border-2 border-white/10 flex items-center justify-center mb-4 shadow-inner">
+                  <span className="text-xl font-black text-amber-500/70 uppercase">{(op.nome || 'OP').substring(0, 2)}</span>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{op.nome}</h3>
                 
-                <div className="flex items-center gap-2 bg-gray-900 px-4 py-2 rounded-lg border border-gray-700 mb-4">
-                  <span className="text-yellow-500 font-mono tracking-widest text-lg font-bold">
+                <div className="flex items-center gap-2 bg-[#09090b] px-4 py-2 rounded-xl border border-white/5 mb-6 shadow-inner">
+                  <span className="text-amber-500 font-mono tracking-[0.2em] text-lg font-black">
                     {showPins[op.id] ? op.pin : '••••'}
                   </span>
-                  <button onClick={() => toggleShowPin(op.id)} className="text-gray-500 hover:text-white transition-colors">
+                  <button onClick={() => toggleShowPin(op.id)} className="text-zinc-500 hover:text-white transition-colors ml-2">
                     {showPins[op.id] ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}
                   </button>
                 </div>
 
                 <Button 
                   variant="outline" 
-                  className={`w-full text-xs font-bold uppercase tracking-widest ${op.status === 'ativo' ? 'border-gray-600 text-gray-300 hover:bg-gray-700' : 'border-red-500/50 text-red-500 hover:bg-red-500/10'}`} 
+                  className={`w-full text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all border-0 py-6 ${op.status === 'ativo' ? 'text-zinc-400 bg-white/5 hover:bg-white/10 hover:text-white' : 'text-red-500 bg-red-500/10 hover:bg-red-500/20'}`} 
                   onClick={() => toggleStatusOperador(op)}
                 >
                   {op.status === 'ativo' ? 'Inativar Acesso' : 'Ativar Acesso'}
@@ -482,57 +500,59 @@ export const ManagerDashboard: React.FC = () => {
         )}
 
         {activeTab === 'empresa' && empresa && (
-          <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 shadow-2xl max-w-2xl mx-auto">
-            <h2 className="text-2xl font-black text-white uppercase tracking-tight mb-8">
+          <div className="bg-[#18181b] border border-white/5 rounded-3xl p-8 sm:p-12 shadow-2xl max-w-2xl mx-auto relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+            
+            <h2 className="text-2xl font-black text-white uppercase tracking-tight mb-8 relative">
               Dados da Empresa
             </h2>
-            <div className="space-y-6">
+            <div className="space-y-8 relative">
               <div>
-                <p className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-2">Nome da Empresa</p>
-                <p className="text-xl font-bold text-white uppercase">{empresa.nomeEmpresa}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-2">Nome da Empresa</p>
+                <p className="text-2xl font-black text-white uppercase tracking-tight">{empresa.nomeEmpresa}</p>
               </div>
-              <div className="pt-6 border-t border-gray-700/50">
-                <p className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-2">Email do Gestor</p>
-                <p className="text-lg font-medium text-gray-300">{empresa.emailGestor}</p>
+              <div className="pt-8 border-t border-white/5">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-2">Email do Gestor</p>
+                <p className="text-lg font-medium text-zinc-300">{empresa.emailGestor}</p>
               </div>
-              <div className="pt-6 border-t border-gray-700/50">
-                <p className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-2">Código da Empresa (Login do Operador)</p>
-                <div className="flex items-center gap-4 bg-gray-900 border border-gray-700 p-4 rounded-xl">
-                  <span className="text-2xl font-black text-yellow-500 uppercase tracking-widest font-mono select-all">
+              <div className="pt-8 border-t border-white/5">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-3">Código da Empresa (Login do Operador)</p>
+                <div className="inline-flex items-center gap-4 bg-[#09090b] border border-white/10 px-6 py-4 rounded-2xl shadow-inner">
+                  <span className="text-3xl font-black text-amber-500 uppercase tracking-[0.2em] font-mono select-all">
                     {empresa.codigoAcesso}
                   </span>
                 </div>
-                <p className="text-xs text-gray-400 mt-3 font-medium">Forneça este código aos seus operadores para que eles possam acessar o aplicativo.</p>
+                <p className="text-xs text-zinc-500 mt-4 font-medium max-w-md">Forneça este código aos seus operadores para que eles possam acessar o aplicativo de checklist.</p>
               </div>
             </div>
           </div>
         )}
-      </div>
+      </main>
 
       {viewChecklistPhotos && (
-        <div className="fixed inset-0 z-50 bg-gray-950/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8">
-           <div className="bg-gray-900 border border-gray-700 p-6 sm:p-10 rounded-3xl max-w-5xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 sm:mb-10 border-b border-gray-800 pb-6">
-                 <h2 className="text-xl sm:text-3xl font-black text-white uppercase tracking-tight">Auditoria: <span className="text-yellow-500">{machines.find(m => m.id === viewChecklistPhotos.maquinaId)?.name}</span></h2>
-                 <Button variant="outline" className="w-full sm:w-auto border-gray-700 hover:bg-gray-800 tracking-wider" onClick={() => setViewChecklistPhotos(null)}>FECHAR</Button>
+        <div className="fixed inset-0 z-50 bg-[#09090b]/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8">
+           <div className="bg-[#18181b] border border-white/5 p-6 sm:p-10 rounded-3xl max-w-5xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 sm:mb-10 border-b border-white/5 pb-6">
+                 <h2 className="text-xl sm:text-3xl font-black text-white uppercase tracking-tight">Auditoria: <span className="text-amber-500">{machines.find(m => m.id === viewChecklistPhotos.maquinaId)?.name}</span></h2>
+                 <Button variant="outline" className="w-full sm:w-auto border-white/10 hover:bg-white/5 tracking-wider bg-transparent text-zinc-300 transition-colors" onClick={() => setViewChecklistPhotos(null)}>FECHAR</Button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="bg-gray-800 p-4 rounded-2xl border border-gray-700">
-                  <h4 className="text-gray-400 text-xs font-bold mb-4 uppercase tracking-widest text-center">Painel (Horímetro)</h4>
-                  <img src={viewChecklistPhotos.fotos?.painel} className="w-full aspect-[4/3] object-cover rounded-xl border border-gray-600 shadow-md" alt="Painel" />
+                <div className="bg-[#09090b] p-4 rounded-2xl border border-white/5 shadow-inner">
+                  <h4 className="text-zinc-500 text-[10px] font-bold mb-4 uppercase tracking-widest text-center">Painel (Horímetro)</h4>
+                  <img src={viewChecklistPhotos.fotos?.painel} className="w-full aspect-[4/3] object-cover rounded-xl border border-white/5 shadow-md" alt="Painel" />
                 </div>
-                <div className="bg-gray-800 p-4 rounded-2xl border border-gray-700">
-                  <h4 className="text-gray-400 text-xs font-bold mb-4 uppercase tracking-widest text-center">Vareta de Óleo</h4>
-                  <img src={viewChecklistPhotos.fotos?.oleo} className="w-full aspect-[4/3] object-cover rounded-xl border border-gray-600 shadow-md" alt="Oleo" />
+                <div className="bg-[#09090b] p-4 rounded-2xl border border-white/5 shadow-inner">
+                  <h4 className="text-zinc-500 text-[10px] font-bold mb-4 uppercase tracking-widest text-center">Vareta de Óleo</h4>
+                  <img src={viewChecklistPhotos.fotos?.oleo} className="w-full aspect-[4/3] object-cover rounded-xl border border-white/5 shadow-md" alt="Oleo" />
                 </div>
-                <div className="bg-gray-800 p-4 rounded-2xl border border-gray-700">
-                  <h4 className="text-gray-400 text-xs font-bold mb-4 uppercase tracking-widest text-center">Água do Radiador</h4>
-                  <img src={viewChecklistPhotos.fotos?.radiador} className="w-full aspect-[4/3] object-cover rounded-xl border border-gray-600 shadow-md" alt="Radiador" />
+                <div className="bg-[#09090b] p-4 rounded-2xl border border-white/5 shadow-inner">
+                  <h4 className="text-zinc-500 text-[10px] font-bold mb-4 uppercase tracking-widest text-center">Água do Radiador</h4>
+                  <img src={viewChecklistPhotos.fotos?.radiador} className="w-full aspect-[4/3] object-cover rounded-xl border border-white/5 shadow-md" alt="Radiador" />
                 </div>
               </div>
 
-              <div className="mt-8 flex justify-between text-gray-400 font-bold text-sm uppercase tracking-wider bg-gray-800/50 p-6 rounded-2xl border border-gray-800">
+              <div className="mt-8 flex justify-between text-zinc-400 font-bold text-sm uppercase tracking-wider bg-[#09090b] p-6 rounded-2xl border border-white/5 shadow-inner">
                  <span>Operador: <span className="text-white">{viewChecklistPhotos.operadorNome || viewChecklistPhotos.operadorId}</span></span>
                  <span><span className="text-white">{format(getSafeDate(viewChecklistPhotos.dataHora), 'dd/MM/yyyy')}</span> às <span className="text-white">{format(getSafeDate(viewChecklistPhotos.dataHora), 'HH:mm')}</span></span>
               </div>
@@ -541,15 +561,15 @@ export const ManagerDashboard: React.FC = () => {
       )}
 
       {machineToDelete && (
-        <div className="fixed inset-0 z-50 bg-gray-950/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8">
-           <div className="bg-gray-900 border border-gray-700 p-6 sm:p-8 rounded-2xl max-w-sm w-full shadow-2xl">
-              <h2 className="text-xl font-black text-white uppercase tracking-tight mb-2">Excluir Máquina</h2>
-              <p className="text-gray-400 text-sm mb-6">
+        <div className="fixed inset-0 z-50 bg-[#09090b]/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8">
+           <div className="bg-[#18181b] border border-white/5 p-8 rounded-3xl max-w-sm w-full shadow-2xl">
+              <h2 className="text-2xl font-black text-white uppercase tracking-tight mb-2">Excluir Máquina</h2>
+              <p className="text-zinc-400 text-sm mb-8 font-medium">
                 Tem certeza que deseja excluir <strong className="text-white">{machineToDelete.name}</strong>? Esta ação não pode ser desfeita.
               </p>
               <div className="flex gap-3">
-                <Button variant="ghost" className="flex-1 font-bold" onClick={() => setMachineToDelete(null)}>CANCELAR</Button>
-                <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white shadow-none font-bold" onClick={() => handleDeleteMachine(machineToDelete)}>EXCLUIR</Button>
+                <Button variant="ghost" className="flex-1 font-bold text-zinc-400 hover:text-white" onClick={() => setMachineToDelete(null)}>CANCELAR</Button>
+                <Button className="flex-1 bg-red-500/10 hover:bg-red-500 border border-red-500/20 text-red-500 hover:text-white shadow-none font-bold transition-all" onClick={() => handleDeleteMachine(machineToDelete)}>EXCLUIR</Button>
               </div>
            </div>
         </div>
