@@ -449,9 +449,9 @@ export const ManagerDashboard: React.FC = () => {
                   )}
 
                   {machine.status !== 'maintenance' && !checklistToday && (
-                     <a href={`https://wa.me/?text=Olá! Por favor, lembre-se de enviar o checklist da ${machine.name} hoje.`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="w-full inline-flex items-center justify-center rounded-xl text-[11px] font-bold uppercase tracking-widest transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 min-h-[40px] py-4 bg-[#25D366] text-zinc-950 hover:bg-[#1DA851] shadow-lg shadow-[#25D366]/20 border-0">
-                        Acionar Operador
-                     </a>
+                     <div className="w-full inline-flex items-center justify-center rounded-xl text-[11px] font-bold uppercase tracking-widest transition-colors min-h-[40px] py-4 bg-zinc-800 text-zinc-500 border border-white/5 opacity-50 select-none">
+                        Aguardando Envio
+                     </div>
                   )}
 
                   {machine.status !== 'maintenance' ? (

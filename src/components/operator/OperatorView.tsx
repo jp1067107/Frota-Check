@@ -173,26 +173,28 @@ export const OperatorView: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans selection:bg-amber-500/30">
       
       {/* HEADER */}
-      <header className="bg-gray-800 p-6 shadow-md border-b border-gray-700 flex items-center justify-between shrink-0">
+      <header className="sticky top-0 z-40 bg-[#09090b]/80 backdrop-blur-xl p-6 border-b border-white/5 flex items-center justify-between shrink-0">
         <div className="flex items-center">
-          <div className="w-14 h-14 bg-yellow-500 flex items-center justify-center rounded-lg mr-4 shrink-0 shadow-lg">
-            <Truck className="w-8 h-8 text-gray-900" />
+          <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center rounded-xl mr-4 shrink-0 shadow-lg shadow-amber-500/20">
+            <Truck className="w-6 h-6 text-zinc-950" />
           </div>
           <div>
-            <h1 className="text-2xl font-black text-yellow-500 uppercase tracking-widest leading-none">FrotaCheck</h1>
-            <p className="text-sm font-medium text-gray-400 mt-1 uppercase tracking-wider">Terminal do Operador</p>
+            <h1 className="text-xl font-bold tracking-tight text-white">
+              Frota<span className="text-amber-500">Check</span>
+            </h1>
+            <p className="text-[10px] font-bold text-zinc-500 mt-0.5 uppercase tracking-widest">Terminal do Operador</p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           {isInstallable && (
-            <Button variant="outline" className="hidden sm:flex text-xs font-bold uppercase tracking-widest border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/10 gap-2 items-center" onClick={installPWA}>
+            <Button variant="outline" className="hidden sm:flex text-xs font-bold uppercase tracking-widest border-amber-500/20 text-amber-500 hover:bg-amber-500/10 gap-2 items-center" onClick={installPWA}>
               <Download className="w-4 h-4" /> Instalar App
             </Button>
           )}
-          <Button variant="ghost" className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-red-400 hover:bg-red-400/10 transition-colors" onClick={logout}>
+          <Button variant="ghost" className="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-red-400 hover:bg-red-400/10 transition-colors" onClick={logout}>
             Sair
           </Button>
         </div>
@@ -201,25 +203,33 @@ export const OperatorView: React.FC = () => {
       <main className="flex-1 w-full max-w-lg mx-auto p-6 pb-32">
         {screen === 'A' && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="text-3xl font-black text-center text-white mb-2 uppercase tracking-tight">Liberação de Frota</h2>
+            <div className="text-center">
+              <h2 className="text-2xl sm:text-3xl font-black text-white mb-2 tracking-tight">Liberação de Frota</h2>
+              <p className="text-sm text-zinc-400">Selecione uma máquina para iniciar.</p>
+            </div>
             
-            <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-xl space-y-8">
+            <div className="bg-[#18181b] p-6 rounded-3xl border border-white/5 shadow-2xl space-y-8">
               
               <div className="space-y-3">
-                <label className="block text-xl font-bold uppercase text-gray-300">Equipamento</label>
-                <select 
-                  className="w-full h-20 px-4 text-2xl font-bold bg-gray-900 border-2 border-gray-600 rounded-xl focus:border-yellow-500 focus:outline-none text-white appearance-none transition-colors"
-                  value={selectedMachine}
-                  onChange={e => setSelectedMachine(e.target.value)}
-                >
-                  <option value="">-- SELECIONE --</option>
-                  {machines.map(m => (
-                    <option key={m.id} value={m.id}>{m.name}</option>
-                  ))}
-                  {machines.length === 0 && (
-                    <option value="" disabled>Nenhuma máquina ativa</option>
-                  )}
-                </select>
+                <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500">Equipamento</label>
+                <div className="relative">
+                  <select 
+                    className="w-full h-16 px-4 text-xl font-bold bg-[#09090b] border border-white/10 rounded-xl focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 focus:outline-none text-white appearance-none transition-all shadow-inner"
+                    value={selectedMachine}
+                    onChange={e => setSelectedMachine(e.target.value)}
+                  >
+                    <option value="">-- SELECIONE --</option>
+                    {machines.map(m => (
+                      <option key={m.id} value={m.id}>{m.name}</option>
+                    ))}
+                    {machines.length === 0 && (
+                      <option value="" disabled>Nenhuma máquina ativa</option>
+                    )}
+                  </select>
+                  <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                    <ChevronRight className="w-6 h-6 text-zinc-500 rotate-90" />
+                  </div>
+                </div>
               </div>
 
               {/* Removed PIN input since operator is already logged in with PIN */}
@@ -227,7 +237,7 @@ export const OperatorView: React.FC = () => {
             </div>
 
             <button 
-              className="w-full bg-yellow-500 text-gray-900 font-black text-2xl py-6 rounded-2xl shadow-[0_6px_0_#b47c00] active:translate-y-1 active:shadow-[0_0px_0_#b47c00] transition-all uppercase tracking-wider disabled:opacity-50 disabled:active:translate-y-0 disabled:shadow-none"
+              className="w-full bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-zinc-950 font-black text-xl py-6 rounded-2xl shadow-lg shadow-amber-500/20 active:scale-[0.98] transition-all uppercase tracking-widest disabled:opacity-50 disabled:active:scale-100 disabled:shadow-none border-0"
               onClick={startChecklist}
               disabled={!selectedMachine || !operadorId}
             >
