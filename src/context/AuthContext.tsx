@@ -38,6 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [operatorData, setOperatorData] = useState<OperatorData | null>(null);
   const [role, setRole] = useState<'manager' | 'operator' | null>(null);
   const [loading, setLoading] = useState(true);
+  const isLoggingInOperator = React.useRef(false);
 
   useEffect(() => {
     // Initial check for operator in localStorage
@@ -90,12 +91,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         setRole('manager');
       } else if (currentUser && currentUser.isAnonymous) {
-        // Anonymous user check. Let the operator useEffect handle the rest.
-        // We only set user, not role. Role comes from operatorData.
+        // Anonymous user check.
+        if (isLoggingInOperator.current) {
+          // Let loginOperator handle state changes and loading=false
+          return;
+        }
+        
+        // Restore from storage if available
+        const storedOperator = localStorage.getItem('operatorData');
+        if (storedOperator) {
+          try {
+            const parsed = JSON.parse(storedOperator);
+            setOperatorData(parsed);
+            setRole('operator');
+          } catch (e) {}
+        } else {
+          // Anonymous user without operator data? Logout just in case.
+          signOut(auth);
+          setRole(null);
+        }
       } else {
         // Not logged in
         setRole(null);
         setEmpresa(null);
+        setOperatorData(null);
       }
       
       setLoading(false);
@@ -171,6 +190,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const loginOperator = async (codigoAcesso: string, pin: string) => {
+    isLoggingInOperator.current = true;
     setLoading(true);
     try {
       await signInAnonymously(auth);
@@ -206,8 +226,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setOperatorData(opData);
       setRole('operator');
       setEmpresa({ id: empresaId, ...empData });
-      setLoading(false); // Manually set false here because anonymous auth doesn't trigger full onAuthStateChanged data fetch
+      setLoading(false);
+      isLoggingInOperator.current = false;
     } catch (err) {
+      isLoggingInOperator.current = false;
       await signOut(auth);
       setLoading(false);
       throw err;

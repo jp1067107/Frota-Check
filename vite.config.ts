@@ -16,7 +16,8 @@ export default defineConfig(({mode}) => {
           enabled: true
         },
         manifest: {
-          name: 'FrotaCheck',
+          id: 'frotacheck-pwa-v1',
+          name: 'FrotaCheck Audit',
           short_name: 'FrotaCheck',
           description: 'Sistema de Auditoria e Checklist de Frota em Campo',
           start_url: '/',
