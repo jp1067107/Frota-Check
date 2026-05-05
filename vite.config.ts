@@ -14,7 +14,8 @@ export default defineConfig(({mode}) => {
         injectRegister: null,
         registerType: 'autoUpdate',
         devOptions: {
-          enabled: true
+          enabled: true,
+          type: 'module'
         },
         manifest: {
           id: 'frotacheck-pwa-v1',

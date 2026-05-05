@@ -1,0 +1,17 @@
+{
+  "name": "FrotaCheck",
+  "short_name": "FrotaCheck",
+  "description": "Gestor de Frota",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#22c55e",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/fksxHs98/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -16,10 +16,18 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
+    <script type="module">
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js');
+          const isDev = import.meta.env.DEV;
+          const swUrl = isDev ? '/dev-sw.js?dev-sw' : '/sw.js';
+          navigator.serviceWorker.register(swUrl, { 
+            type: isDev ? 'module' : 'classic' 
+          }).then((reg) => {
+            console.log('SW registered!', reg);
+          }).catch((err) => {
+            console.error('SW registration failed:', err);
+          });
         });
       }
     </script>
