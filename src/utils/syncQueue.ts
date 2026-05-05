@@ -41,6 +41,7 @@ export const processSyncQueue = async () => {
         maquinaId: item.maquinaId,
         maquinaNome: item.maquinaNome,
         operadorId: item.operadorId,
+        operadorNome: item.operadorNome || item.operadorId,
         dataHora: serverTimestamp(),
         status: 'liberada',
         fotos: {

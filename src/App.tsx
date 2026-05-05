@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { OperatorView } from './components/operator/OperatorView';
-import { ManagerDashboard } from './components/manager/ManagerDashboard';
-import { OperatorLogin } from './components/operator/OperatorLogin';
-import { ManagerLogin } from './components/manager/ManagerLogin';
-import { RegisterGestor } from './components/manager/RegisterGestor';
-import { PaywallPix } from './components/PaywallPix';
 import { Button } from './components/ui/Button';
 import { Truck } from 'lucide-react';
 import { processSyncQueue } from './utils/syncQueue';
+
+const OperatorView = lazy(() => import('./components/operator/OperatorView').then(m => ({ default: m.OperatorView })));
+const ManagerDashboard = lazy(() => import('./components/manager/ManagerDashboard').then(m => ({ default: m.ManagerDashboard })));
+const OperatorLogin = lazy(() => import('./components/operator/OperatorLogin').then(m => ({ default: m.OperatorLogin })));
+const ManagerLogin = lazy(() => import('./components/manager/ManagerLogin').then(m => ({ default: m.ManagerLogin })));
+const RegisterGestor = lazy(() => import('./components/manager/RegisterGestor').then(m => ({ default: m.RegisterGestor })));
+const PaywallPix = lazy(() => import('./components/PaywallPix').then(m => ({ default: m.PaywallPix })));
+const ResetPassword = lazy(() => import('./components/auth/ResetPassword').then(m => ({ default: m.ResetPassword })));
 
 const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -76,34 +78,42 @@ const AppRoutes: React.FC = () => {
 
   return (
     <>
-      <Routes>
-        <Route 
-          path="/" 
-          element={
-            role === 'manager' ? <Navigate to="/dashboard" replace /> :
-            role === 'operator' ? <Navigate to="/operador" replace /> :
-            <HomeScreen />
-          } 
-        />
-        
-        <Route path="/manager-login" element={<ManagerLogin />} />
-        <Route path="/manager-register" element={<RegisterGestor />} />
-        <Route path="/operator-login" element={<OperatorLogin />} />
+      <Suspense fallback={
+        <div className="min-h-screen bg-gray-900 flex justify-center items-center">
+          <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      }>
+        <Routes>
+          <Route 
+            path="/" 
+            element={
+              role === 'manager' ? <Navigate to="/dashboard" replace /> :
+              role === 'operator' ? <Navigate to="/operador" replace /> :
+              <HomeScreen />
+            } 
+          />
+          
+          <Route path="/manager-login" element={<ManagerLogin />} />
+          <Route path="/manager-register" element={<RegisterGestor />} />
+          <Route path="/operator-login" element={<OperatorLogin />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/__/auth/action" element={<ResetPassword />} />
 
-        <Route path="/dashboard" element={
-          <ProtectedRoute allowedRole="manager">
-            <ManagerDashboard />
-          </ProtectedRoute>
-        } />
+          <Route path="/dashboard" element={
+            <ProtectedRoute allowedRole="manager">
+              <ManagerDashboard />
+            </ProtectedRoute>
+          } />
 
-        <Route path="/operador" element={
-          <ProtectedRoute allowedRole="operator">
-            <OperatorView />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          <Route path="/operador" element={
+            <ProtectedRoute allowedRole="operator">
+              <OperatorView />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </>
   );
 };

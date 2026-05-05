@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, signInWithEmailAndPassword, signOut, signInAnonymously } from 'firebase/auth';
 import { auth, db } from '../firebase/config';
-import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { Empresa } from '../types';
 
 interface OperatorData {
   empresaId: string;
-  operadorId: string; // the PIN
+  operadorId: string; // The selected operator doc ID
+  nomeOperador: string;
 }
 
 interface AuthContextType {
@@ -57,25 +58,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (currentUser && !currentUser.isAnonymous) {
         // Manager flow
         try {
+          let foundEmpresa: Empresa | null = null;
           const empDoc = await getDoc(doc(db, 'empresas', currentUser.uid));
+          
           if (empDoc.exists()) {
-            setEmpresa({ id: empDoc.id, ...empDoc.data() } as Empresa);
+            foundEmpresa = { id: empDoc.id, ...empDoc.data() } as Empresa;
           } else {
             const q = query(collection(db, 'empresas'), where('emailGestor', '==', currentUser.email));
             const snap = await getDocs(q);
             if (!snap.empty) {
-              setEmpresa({ id: snap.docs[0].id, ...snap.docs[0].data() } as Empresa);
+              foundEmpresa = { id: snap.docs[0].id, ...snap.docs[0].data() } as Empresa;
+            } else {
+              // Auto-create recovery
+              console.log("No empresa found, auto-creating recovery record...");
+              const codigoAcesso = `EMP-${currentUser.uid.substring(0, 5).toUpperCase()}`;
+              const newEmpresa = {
+                nomeEmpresa: `Empresa Recuperada`,
+                codigoAcesso: codigoAcesso,
+                emailGestor: currentUser.email,
+                statusAssinatura: "ativo",
+                dataCadastro: serverTimestamp()
+              };
+              
+              await setDoc(doc(db, 'empresas', currentUser.uid), newEmpresa);
+              foundEmpresa = { id: currentUser.uid, ...newEmpresa } as Empresa;
             }
           }
+          setEmpresa(foundEmpresa);
         } catch (e) {
-          console.error("Error fetching empresa", e);
+          console.error("Error fetching/creating empresa", e);
         }
         setRole('manager');
       } else if (currentUser && currentUser.isAnonymous) {
         // Anonymous user check. Let the operator useEffect handle the rest.
         // We only set user, not role. Role comes from operatorData.
-      } else if (role === 'manager') {
-        // If they were a manager and logged out
+      } else {
+        // Not logged in
         setRole(null);
         setEmpresa(null);
       }
@@ -110,9 +128,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginManager = async (email: string, pass: string) => {
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, pass);
-    } finally {
+      const cred = await signInWithEmailAndPassword(auth, email, pass);
+      const currentUser = cred.user;
+      
+      try {
+        let foundEmpresa: Empresa | null = null;
+        const empDoc = await getDoc(doc(db, 'empresas', currentUser.uid));
+        
+        if (empDoc.exists()) {
+          foundEmpresa = { id: empDoc.id, ...empDoc.data() } as Empresa;
+        } else {
+          const q = query(collection(db, 'empresas'), where('emailGestor', '==', currentUser.email));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            foundEmpresa = { id: snap.docs[0].id, ...snap.docs[0].data() } as Empresa;
+          } else {
+            // Auto-create recovery
+            console.log("No empresa found, auto-creating recovery record...");
+            const codigoAcesso = `EMP-${currentUser.uid.substring(0, 5).toUpperCase()}`;
+            const newEmpresa = {
+              nomeEmpresa: `Empresa Recuperada`,
+              codigoAcesso: codigoAcesso,
+              emailGestor: currentUser.email,
+              statusAssinatura: "ativo",
+              dataCadastro: serverTimestamp()
+            };
+            
+            await setDoc(doc(db, 'empresas', currentUser.uid), newEmpresa);
+            foundEmpresa = { id: currentUser.uid, ...newEmpresa } as Empresa;
+          }
+        }
+        setEmpresa(foundEmpresa);
+      } catch (e) {
+        console.error("Error fetching/creating empresa", e);
+      }
+      setRole('manager');
       setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      throw e;
     }
   };
 
@@ -136,23 +190,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error('Sistema temporariamente bloqueado. Contate o gestor da frota.');
       }
 
-      // Check if operator pin exists via getDoc using predictable ID
-      const opDoc = await getDoc(doc(db, 'operadores', `${empresaId}_${pin}`));
+      // Check if operator pin exists
+      const qOp = query(collection(db, 'operadores'), where('empresaId', '==', empresaId), where('pin', '==', pin), where('status', '==', 'ativo'));
+      const snapOp = await getDocs(qOp);
       
-      if (!opDoc.exists()) {
-        throw new Error('Operador não encontrado com este PIN.');
+      if (snapOp.empty) {
+        throw new Error('Operador não encontrado com este PIN, ou seu acesso está desativado.');
       }
 
-      const opData = { empresaId, operadorId: pin };
+      const opDoc = snapOp.docs[0];
+      const opDataObj = opDoc.data();
+
+      const opData = { empresaId, operadorId: opDoc.id, nomeOperador: opDataObj.nome };
       localStorage.setItem('operatorData', JSON.stringify(opData));
       setOperatorData(opData);
       setRole('operator');
       setEmpresa({ id: empresaId, ...empData });
+      setLoading(false); // Manually set false here because anonymous auth doesn't trigger full onAuthStateChanged data fetch
     } catch (err) {
       await signOut(auth);
-      throw err;
-    } finally {
       setLoading(false);
+      throw err;
     }
   };
 

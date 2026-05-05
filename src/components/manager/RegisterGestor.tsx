@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Truck } from 'lucide-react';
+import { Truck, ArrowLeft } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useAuth } from '../../context/AuthContext';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
@@ -37,7 +37,12 @@ export const RegisterGestor: React.FC = () => {
     try {
       // 1. Authenticate anonymously just to read the DB securely
       const { signInAnonymously } = await import('firebase/auth');
-      await signInAnonymously(auth);
+      try {
+        await signInAnonymously(auth);
+      } catch (anonErr: any) {
+        console.error("Erro no login anônimo:", anonErr);
+        throw new Error(`Falha ao iniciar verificação segura (Login Anônimo). Verifique se o login Anônimo está ativado no Firebase. Detalhes: ${anonErr.message || anonErr.code}`);
+      }
 
       // 2. Check if codigoAcesso is inherently unique
       const q = query(collection(db, 'empresas'), where('codigoAcesso', '==', codigoLimpo));
@@ -52,10 +57,24 @@ export const RegisterGestor: React.FC = () => {
       await auth.signOut();
 
       // 3. Create the Auth user
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      let userCred;
+      try {
+        userCred = await createUserWithEmailAndPassword(auth, email, password);
+      } catch (createErr: any) {
+        console.error("Erro na criação de usuário email/senha:", createErr);
+        if (createErr.code === 'auth/email-already-in-use') {
+          throw new Error('Já existe uma conta cadastrada com este e-mail.');
+        } else if (createErr.code === 'auth/weak-password') {
+          throw new Error('Sua senha deve ter pelo menos 6 caracteres.');
+        } else if (createErr.code === 'auth/invalid-email') {
+          throw new Error('Forneça um e-mail válido.');
+        }
+        throw new Error(`Falha ao criar usuário (E-mail/Senha). Erro do Firebase: ${createErr.code}. ${createErr.code === 'auth/admin-restricted-operation' ? 'A criação de contas está desativada no painel do Firebase.' : ''}`);
+      }
+      
       const uid = userCred.user.uid;
 
-      // 3. Set the Firestore document using UID
+      // 4. Set the Firestore document using UID
       await setDoc(doc(db, 'empresas', uid), {
         nomeEmpresa: nomeEmpresa,
         codigoAcesso: codigoLimpo,
@@ -66,15 +85,29 @@ export const RegisterGestor: React.FC = () => {
         handleFirestoreError(err, OperationType.CREATE, `empresas/${uid}`);
       });
 
-      // 4. Force hard reload to update context and jump straight into the dashboard cleanly
+      // 5. Force hard reload to update context and jump straight into the dashboard cleanly
       window.location.href = '/dashboard';
     } catch (err: any) {
-      if (err.code === 'auth/email-already-in-use') {
+      console.error("Erro completo processado pelo catch geral:", err);
+      
+      if (err.message && err.message.includes('Já existe uma conta cadastrada com este e-mail.')) {
+        setError(err.message);
+      } else if (err.message && err.message.includes('Sua senha deve ter pelo menos')) {
+        setError(err.message);
+      } else if (err.message && err.message.includes('Forneça um e-mail válido.')) {
+        setError(err.message);
+      } else if (err.message && err.message.includes('Falha ao')) {
+        setError(err.message);
+      } else if (err.message && err.message.includes('Este código de acesso')) {
+        setError(err.message);
+      } else if (err.code === 'auth/email-already-in-use') {
         setError('Este e-mail já está cadastrado.');
       } else if (err.code === 'auth/weak-password') {
         setError('Sua senha deve ter pelo menos 6 caracteres.');
       } else if (err.code === 'auth/invalid-email') {
         setError('Forneça um e-mail válido.');
+      } else if (err.code === 'auth/admin-restricted-operation') {
+        setError('Operação restrita. Verifique as permissões de criação de usuário no painel do Firebase.');
       } else {
         setError(err.message || 'Erro ao criar conta.');
       }
@@ -83,8 +116,15 @@ export const RegisterGestor: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col font-sans p-6 justify-center items-center">
-      <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col font-sans p-6 justify-center items-center relative">
+      <button 
+        onClick={() => navigate('/')}
+        className="absolute top-6 left-6 text-gray-500 hover:text-white transition-colors flex items-center gap-2 font-bold uppercase tracking-widest text-sm"
+      >
+        <ArrowLeft className="w-5 h-5" /> Voltar
+      </button>
+
+      <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 mt-12 md:mt-0">
         
         <div className="text-center space-y-2">
           <div className="w-20 h-20 bg-yellow-500 rounded-2xl mx-auto flex items-center justify-center shadow-xl mb-6">

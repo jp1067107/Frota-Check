@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Truck, ChevronRight } from 'lucide-react';
+import { Truck, ChevronRight, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../ui/Button';
+import { useNavigate } from 'react-router-dom';
 
 export const OperatorLogin: React.FC = () => {
   const [empresaId, setEmpresaId] = useState('');
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const { loginOperator, loading } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,13 +22,21 @@ export const OperatorLogin: React.FC = () => {
 
     try {
       await loginOperator(empresaId.toLowerCase().trim(), pin);
+      navigate('/operador');
     } catch (err: any) {
       setError(err.message || 'Código da empresa ou PIN inválidos.');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col font-sans p-6 justify-center items-center">
+    <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col font-sans p-6 justify-center items-center relative">
+      <button 
+        onClick={() => navigate('/')}
+        className="absolute top-6 left-6 text-gray-500 hover:text-white transition-colors flex items-center gap-2 font-bold uppercase tracking-widest text-sm"
+      >
+        <ArrowLeft className="w-5 h-5" /> Voltar
+      </button>
+
       <div className="w-full max-w-sm space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         
         <div className="text-center space-y-2">

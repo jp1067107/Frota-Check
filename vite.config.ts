@@ -19,7 +19,7 @@ export default defineConfig(({mode}) => {
           name: 'FrotaCheck',
           short_name: 'FrotaCheck',
           theme_color: '#eab308',
-          background_color: '#111827',
+          background_color: '#0f172a',
           display: 'standalone',
           orientation: 'portrait',
           icons: [
@@ -44,6 +44,18 @@ export default defineConfig(({mode}) => {
       alias: {
         '@': path.resolve(__dirname, '.'),
       },
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage'],
+            utils: ['date-fns', 'lucide-react', 'localforage'],
+            pdf: ['jspdf', 'html2canvas']
+          }
+        }
+      }
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
