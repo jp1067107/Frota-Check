@@ -2,27 +2,30 @@ import { useState, useEffect } from 'react';
 
 export function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [isInstallable, setIsInstallable] = useState(false);
+  const [isInstallable, setIsInstallable] = useState(true);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
+    // Detect iOS
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
+    setIsIOS(isIOSDevice);
+
     // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone) {
       setIsInstalled(true);
+      setIsInstallable(false);
     }
 
     const handleBeforeInstallPrompt = (e: any) => {
       console.log('PWA: beforeinstallprompt event fired');
-      // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
-      // Stash the event so it can be triggered later.
       setDeferredPrompt(e);
-      // Update UI notify the user they can install the PWA
       setIsInstallable(true);
     };
 
     const handleAppInstalled = () => {
-      // Log install to analytics
       console.log('INSTALL: Success');
       setIsInstallable(false);
       setIsInstalled(true);
@@ -39,21 +42,24 @@ export function usePWAInstall() {
   }, []);
 
   const installPWA = async () => {
-    if (!deferredPrompt) return;
+    if (isIOS) {
+      alert('Para instalar no iOS:\n\n1. Toque no botão "Compartilhar" (ícone com uma seta para cima)\n2. Role para baixo e selecione "Adicionar à Tela de Início"');
+      return;
+    }
 
-    // Show the install prompt
+    if (!deferredPrompt) {
+      alert('Para instalar:\n\nAbra o menu do seu navegador (geralmente os três pontinhos no canto superior) e procure a opção "Adicionar à Tela Inicial" ou "Instalar Aplicativo".');
+      return;
+    }
+
     deferredPrompt.prompt();
-
-    // Wait for the user to respond to the prompt
     const { outcome } = await deferredPrompt.userChoice;
-    
-    // Optionally, send analytics event with outcome of user choice
     console.log(`User response to the install prompt: ${outcome}`);
-
-    // We've used the prompt, and can't use it again, throw it away
     setDeferredPrompt(null);
     setIsInstallable(false);
   };
 
   return { isInstallable, isInstalled, installPWA };
 }
+
+
