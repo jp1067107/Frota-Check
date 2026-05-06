@@ -18,9 +18,15 @@ export function usePWAInstall() {
       setIsInstallable(false);
     }
 
+    if ((window as any).deferredPWAEvent) {
+      setDeferredPrompt((window as any).deferredPWAEvent);
+      setIsInstallable(true);
+    }
+
     const handleBeforeInstallPrompt = (e: any) => {
       console.log('PWA: beforeinstallprompt event fired');
       e.preventDefault();
+      (window as any).deferredPWAEvent = e;
       setDeferredPrompt(e);
       setIsInstallable(true);
     };
@@ -56,6 +62,7 @@ export function usePWAInstall() {
     const { outcome } = await deferredPrompt.userChoice;
     console.log(`User response to the install prompt: ${outcome}`);
     setDeferredPrompt(null);
+    (window as any).deferredPWAEvent = null;
     setIsInstallable(false);
   };
 

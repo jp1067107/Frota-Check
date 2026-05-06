@@ -22,6 +22,11 @@
     <script type="module" src="/src/main.tsx"></script>
     <!-- Cache buster -->
     <script>
+      window.deferredPWAEvent = null;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.deferredPWAEvent = e;
+      });
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js');
