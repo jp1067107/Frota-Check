@@ -19,10 +19,18 @@ export const ManagerDashboard: React.FC = () => {
   
   // Modals / Overlays
   const [addingMachine, setAddingMachine] = useState(false);
+  const [editingMachine, setEditingMachine] = useState<Machine | null>(null);
   const [addingOperador, setAddingOperador] = useState(false);
   
   const [newMachineName, setNewMachineName] = useState('');
   const [newMachinePlaca, setNewMachinePlaca] = useState('');
+  const [newMachineAno, setNewMachineAno] = useState('');
+  const [newMachineChassi, setNewMachineChassi] = useState('');
+  const [newMachineRenavam, setNewMachineRenavam] = useState('');
+  const [newMachineTipo, setNewMachineTipo] = useState('');
+  const [newMachineHorimetroKmAtual, setNewMachineHorimetroKmAtual] = useState('');
+  const [newMachineProximaRevisao, setNewMachineProximaRevisao] = useState('');
+  const [newMachineObservacoes, setNewMachineObservacoes] = useState('');
   
   const [newOperadorName, setNewOperadorName] = useState('');
   const [newOperadorPin, setNewOperadorPin] = useState('');
@@ -80,6 +88,13 @@ export const ManagerDashboard: React.FC = () => {
       await setDoc(doc(db, 'maquinas', id), {
         name: newMachineName,
         placa: newMachinePlaca,
+        ano: newMachineAno,
+        chassi: newMachineChassi,
+        renavam: newMachineRenavam,
+        tipoMaquina: newMachineTipo,
+        horimetroKmAtual: newMachineHorimetroKmAtual,
+        proximaRevisao: newMachineProximaRevisao,
+        observacoes: newMachineObservacoes,
         status: 'active', // Should start as active per requirements or pendente, wait, requirement says "ativa"
         empresaId: empresa.id,
         createdAt: serverTimestamp(),
@@ -91,6 +106,13 @@ export const ManagerDashboard: React.FC = () => {
       setAddingMachine(false);
       setNewMachineName('');
       setNewMachinePlaca('');
+      setNewMachineAno('');
+      setNewMachineChassi('');
+      setNewMachineRenavam('');
+      setNewMachineTipo('');
+      setNewMachineHorimetroKmAtual('');
+      setNewMachineProximaRevisao('');
+      setNewMachineObservacoes('');
       alert('Máquina cadastrada com sucesso!');
     } catch (e) {
       console.error(e);
@@ -290,15 +312,15 @@ export const ManagerDashboard: React.FC = () => {
 
         {addingMachine && (
           <div className="fixed inset-0 z-50 bg-[#09090b]/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#18181b] border border-white/5 p-8 rounded-3xl max-w-sm w-full shadow-2xl space-y-6">
-              <h2 className="text-2xl font-black text-white uppercase tracking-tight">Nova Máquina</h2>
+            <div className="bg-[#18181b] border border-white/5 p-8 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl space-y-6">
+              <h2 className="text-2xl font-black text-white uppercase tracking-tight">Nova Máquina / Veículo</h2>
               
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Nome/Modelo</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2 md:col-span-2">
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Nome/Modelo *</label>
                   <input 
                     type="text" 
-                    placeholder="Ex: Retroescavadeira 05" 
+                    placeholder="Ex: Escavadeira CAT 320" 
                     className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all font-medium placeholder:text-zinc-700"
                     value={newMachineName}
                     onChange={e => setNewMachineName(e.target.value)}
@@ -306,13 +328,78 @@ export const ManagerDashboard: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Placa/Identificação</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Placa/Identificação *</label>
                   <input 
                     type="text"
-                    placeholder="Ex: TX-9090" 
+                    placeholder="Ex: ABC-1234 ou INT-01" 
                     className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all font-medium placeholder:text-zinc-700"
                     value={newMachinePlaca}
                     onChange={e => setNewMachinePlaca(e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Tipo Categoria</label>
+                  <input 
+                    type="text"
+                    placeholder="Ex: Caminhão, Trator..." 
+                    className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all font-medium placeholder:text-zinc-700"
+                    value={newMachineTipo}
+                    onChange={e => setNewMachineTipo(e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Ano</label>
+                  <input 
+                    type="text"
+                    placeholder="Ex: 2018" 
+                    className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all font-medium placeholder:text-zinc-700"
+                    value={newMachineAno}
+                    onChange={e => setNewMachineAno(e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Horímetro / KM Atual</label>
+                  <input 
+                    type="text"
+                    placeholder="Ex: 50.000km" 
+                    className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all font-medium placeholder:text-zinc-700"
+                    value={newMachineHorimetroKmAtual}
+                    onChange={e => setNewMachineHorimetroKmAtual(e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Data Próxima Revisão</label>
+                  <input 
+                    type="date"
+                    className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all font-medium placeholder:text-zinc-700 [color-scheme:dark]"
+                    value={newMachineProximaRevisao}
+                    onChange={e => setNewMachineProximaRevisao(e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Chassi / Renavam</label>
+                  <input 
+                    type="text"
+                    placeholder="Opcional" 
+                    className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all font-medium placeholder:text-zinc-700"
+                    value={newMachineChassi}
+                    onChange={e => setNewMachineChassi(e.target.value)}
+                  />
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500">Observações adicionais</label>
+                  <textarea 
+                    placeholder="Informações para controle..." 
+                    rows={2}
+                    className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all font-medium placeholder:text-zinc-700 resize-none"
+                    value={newMachineObservacoes}
+                    onChange={e => setNewMachineObservacoes(e.target.value)}
                   />
                 </div>
               </div>

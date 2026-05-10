@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Wrench, CheckCircle, AlertTriangle, Clock, ZoomIn, FileText } from 'lucide-react';
+import { X, Wrench, CheckCircle, AlertTriangle, Clock, ZoomIn, FileText, Settings2 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { db } from '../../firebase/config';
 import { collection, query, where, orderBy, onSnapshot, doc, updateDoc, serverTimestamp, getDocs } from 'firebase/firestore';
@@ -19,6 +19,11 @@ export const MachineAuditModal: React.FC<Props> = ({ machine, onClose }) => {
   const [updating, setUpdating] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [editFormData, setEditFormData] = useState<Partial<Machine>>({});
+  const [savingProfile, setSavingProfile] = useState(false);
+  
   const pdfRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -66,6 +71,27 @@ export const MachineAuditModal: React.FC<Props> = ({ machine, onClose }) => {
       handleFirestoreError(error, OperationType.UPDATE, `maquinas/${machine.id}`);
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    setSavingProfile(true);
+    try {
+      const sanitizedData = Object.fromEntries(
+        Object.entries(editFormData).filter(([_, v]) => v !== undefined)
+      );
+
+      await updateDoc(doc(db, 'maquinas', machine.id), {
+        ...sanitizedData,
+        updatedAt: serverTimestamp()
+      });
+      // updating locally for immediate feedback
+      Object.assign(machine, sanitizedData);
+      setEditingProfile(false);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, `maquinas/${machine.id}`);
+    } finally {
+      setSavingProfile(false);
     }
   };
 
@@ -136,6 +162,48 @@ export const MachineAuditModal: React.FC<Props> = ({ machine, onClose }) => {
         {/* Header */}
         <div className="p-6 sm:p-8 pt-10 sm:pt-12 border-b border-white/5 shrink-0 space-y-6">
           <div className="flex items-start justify-between">
+            {editingProfile ? (
+              <div className="w-full mr-4 space-y-4">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Nome/Modelo</label>
+                  <input type="text" className="w-full bg-[#09090b] border border-white/10 rounded-xl px-3 py-2 text-white font-medium focus:border-amber-500/50 outline-none" value={editFormData.name || ''} onChange={e => setEditFormData({...editFormData, name: e.target.value})} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Placa</label>
+                    <input type="text" className="w-full bg-[#09090b] border border-white/10 rounded-xl px-3 py-2 text-white font-medium focus:border-amber-500/50 outline-none" value={editFormData.placa || ''} onChange={e => setEditFormData({...editFormData, placa: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Tipo</label>
+                    <input type="text" className="w-full bg-[#09090b] border border-white/10 rounded-xl px-3 py-2 text-white font-medium focus:border-amber-500/50 outline-none" value={editFormData.tipoMaquina || ''} onChange={e => setEditFormData({...editFormData, tipoMaquina: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Ano</label>
+                    <input type="text" className="w-full bg-[#09090b] border border-white/10 rounded-xl px-3 py-2 text-white font-medium focus:border-amber-500/50 outline-none" value={editFormData.ano || ''} onChange={e => setEditFormData({...editFormData, ano: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Data Revisão</label>
+                    <input type="date" className="w-full bg-[#09090b] border border-white/10 rounded-xl px-3 py-2 text-white font-medium focus:border-amber-500/50 outline-none [color-scheme:dark]" value={editFormData.proximaRevisao || ''} onChange={e => setEditFormData({...editFormData, proximaRevisao: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">KM/Horímetro</label>
+                    <input type="text" className="w-full bg-[#09090b] border border-white/10 rounded-xl px-3 py-2 text-white font-medium focus:border-amber-500/50 outline-none" value={editFormData.horimetroKmAtual || ''} onChange={e => setEditFormData({...editFormData, horimetroKmAtual: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Chassi/Renavam</label>
+                    <input type="text" className="w-full bg-[#09090b] border border-white/10 rounded-xl px-3 py-2 text-white font-medium focus:border-amber-500/50 outline-none" value={editFormData.chassi || ''} onChange={e => setEditFormData({...editFormData, chassi: e.target.value})} />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Observações</label>
+                  <textarea rows={2} className="w-full bg-[#09090b] border border-white/10 rounded-xl px-3 py-2 text-white font-medium focus:border-amber-500/50 outline-none resize-none" value={editFormData.observacoes || ''} onChange={e => setEditFormData({...editFormData, observacoes: e.target.value})} />
+                </div>
+                <div className="flex gap-2 justify-end">
+                  <Button variant="ghost" className="text-zinc-400" onClick={() => setEditingProfile(false)}>Cancelar</Button>
+                  <Button className="bg-amber-500 text-zinc-950 font-bold" onClick={handleSaveProfile} disabled={savingProfile}>{savingProfile ? 'Salvando...' : 'Salvar'}</Button>
+                </div>
+              </div>
+            ) : (
             <div className="space-y-2">
               <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
                 {machine.name}
@@ -147,8 +215,24 @@ export const MachineAuditModal: React.FC<Props> = ({ machine, onClose }) => {
                 <span className="text-zinc-500 font-medium text-xs bg-white/5 px-2 py-1 rounded-md">
                   ID: <span className="font-mono text-zinc-300">{machine.id.split('_')[1]?.toUpperCase() || machine.id.toUpperCase()}</span>
                 </span>
+                {machine.placa && (
+                  <span className="text-zinc-500 font-medium text-xs bg-white/5 px-2 py-1 rounded-md">
+                    PLACA: <span className="font-mono text-zinc-300">{machine.placa}</span>
+                  </span>
+                )}
+                <button 
+                  onClick={() => { setEditFormData({
+                    name: machine.name, placa: machine.placa, tipoMaquina: machine.tipoMaquina, ano: machine.ano, 
+                    horimetroKmAtual: machine.horimetroKmAtual, proximaRevisao: machine.proximaRevisao, 
+                    chassi: machine.chassi, observacoes: machine.observacoes
+                  }); setEditingProfile(true); }}
+                  className="text-xs font-bold text-amber-500 uppercase flex items-center gap-1 hover:text-amber-400 bg-amber-500/10 px-2 py-1 rounded-md transition-colors"
+                >
+                  <Settings2 className="w-3 h-3" /> Editar
+                </button>
               </div>
             </div>
+            )}
             <button 
               onClick={onClose}
               className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors border border-white/5"
@@ -156,6 +240,46 @@ export const MachineAuditModal: React.FC<Props> = ({ machine, onClose }) => {
               <X className="w-5 h-5" />
             </button>
           </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+            {machine.tipoMaquina && (
+              <div className="bg-[#18181b] rounded-xl p-3 border border-white/5 shadow-inner">
+                <p className="text-[9px] uppercase font-bold tracking-widest text-zinc-500">Tipo</p>
+                <p className="text-sm font-medium text-zinc-300 mt-1">{machine.tipoMaquina}</p>
+              </div>
+            )}
+            {machine.ano && (
+              <div className="bg-[#18181b] rounded-xl p-3 border border-white/5 shadow-inner">
+                <p className="text-[9px] uppercase font-bold tracking-widest text-zinc-500">Ano</p>
+                <p className="text-sm font-medium text-zinc-300 mt-1">{machine.ano}</p>
+              </div>
+            )}
+            {machine.horimetroKmAtual && (
+              <div className="bg-[#18181b] rounded-xl p-3 border border-white/5 shadow-inner">
+                <p className="text-[9px] uppercase font-bold tracking-widest text-zinc-500">KM / Horímetro</p>
+                <p className="text-sm font-medium text-zinc-300 mt-1">{machine.horimetroKmAtual}</p>
+              </div>
+            )}
+            {machine.proximaRevisao && (
+              <div className="bg-[#18181b] rounded-xl p-3 border border-white/5 shadow-inner">
+                <p className="text-[9px] uppercase font-bold tracking-widest text-zinc-500">Prox. Revisão</p>
+                <p className="text-sm font-medium text-zinc-300 mt-1">{new Date(machine.proximaRevisao).toLocaleDateString('pt-BR')}</p>
+              </div>
+            )}
+            {machine.chassi && (
+              <div className="bg-[#18181b] rounded-xl p-3 border border-white/5 shadow-inner">
+                <p className="text-[9px] uppercase font-bold tracking-widest text-zinc-500">Chassi/Renavam</p>
+                <p className="text-xs font-mono font-medium text-zinc-300 mt-1 truncate" title={machine.chassi}>{machine.chassi}</p>
+              </div>
+            )}
+          </div>
+          
+          {machine.observacoes && (
+            <div className="bg-[#18181b] rounded-xl p-4 border border-white/5 shadow-inner border-l-4 border-l-amber-500/50">
+               <p className="text-[9px] uppercase font-bold tracking-widest text-zinc-500 mb-1">Notas / Observações</p>
+               <p className="text-xs font-medium text-zinc-400 whitespace-pre-wrap">{machine.observacoes}</p>
+            </div>
+          )}
 
           {/* Action Button */}
           <div className="pt-2 flex flex-col sm:flex-row gap-3">

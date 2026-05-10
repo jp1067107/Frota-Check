@@ -20,6 +20,13 @@ export interface Machine {
   id: string; // The firestore doc ID
   name: string;
   placa?: string;
+  ano?: string;
+  chassi?: string;
+  renavam?: string;
+  tipoMaquina?: string; // e.g., Escavadeira, Caminhão, etc.
+  horimetroKmAtual?: string;
+  proximaRevisao?: string;
+  observacoes?: string;
   status: 'active' | 'maintenance' | 'pendente';
   createdAt: any;
   updatedAt: any;
