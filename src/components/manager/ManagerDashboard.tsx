@@ -197,10 +197,10 @@ export const ManagerDashboard: React.FC = () => {
   const toggleStatusOperador = async (op: Operador) => {
     try {
       const novoStatus = op.status === 'ativo' ? 'inativo' : 'ativo';
-      await updateDoc(doc(db, 'operadores', op.id), { status: novoStatus })
-        .catch(error => handleFirestoreError(error, OperationType.UPDATE, `operadores/${op.id}`));
-    } catch(e) {
-      console.error(e);
+      await updateDoc(doc(db, 'operadores', op.id), { status: novoStatus, updatedAt: serverTimestamp() });
+    } catch(e: any) {
+      console.error("Ops error:", e);
+      alert("Erro ao alterar acesso: " + e.message);
     }
   };
 
@@ -589,7 +589,7 @@ export const ManagerDashboard: React.FC = () => {
 
                 <Button 
                   variant="outline" 
-                  className={`w-full text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all border-0 py-6 ${op.status === 'ativo' ? 'text-zinc-400 bg-white/5 hover:bg-white/10 hover:text-white' : 'text-red-500 bg-red-500/10 hover:bg-red-500/20'}`} 
+                  className={`w-full text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all border-0 py-6 ${op.status === 'ativo' ? 'text-zinc-400 bg-white/5 hover:bg-white/10 hover:text-white' : 'text-amber-500 bg-amber-500/10 hover:bg-amber-500/20'}`} 
                   onClick={() => toggleStatusOperador(op)}
                 >
                   {op.status === 'ativo' ? 'Inativar Acesso' : 'Ativar Acesso'}
