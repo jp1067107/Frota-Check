@@ -58,8 +58,17 @@ const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode; 
   if (initialLoading) return null;
   if (role !== allowedRole) return <Navigate to="/" replace />;
   
-  if (role === 'manager' && empresa?.statusAssinatura === 'inativo') {
-    return <PaywallPix email={user?.email || ''} />;
+  let isExpired = false;
+  if (empresa?.assinaturaValidaAte) {
+    const validUntil = empresa.assinaturaValidaAte.toDate ? empresa.assinaturaValidaAte.toDate() : new Date(empresa.assinaturaValidaAte);
+    isExpired = validUntil < new Date();
+  }
+
+  const isMasterAdmin = empresa?.emailGestor === 'jp1067107@gmail.com' || user?.email === 'jp1067107@gmail.com';
+
+  if (!isMasterAdmin && (empresa?.statusAssinatura === 'inativo' || isExpired)) {
+    // Both managers and operators should be blocked if the subscription is inactive or expired
+    return <PaywallPix email={empresa?.emailGestor || user?.email || ''} role={role} />;
   }
   
   return <>{children}</>;

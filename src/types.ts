@@ -4,6 +4,7 @@ export interface Empresa {
   codigoAcesso: string;
   emailGestor: string;
   statusAssinatura: 'ativo' | 'inativo';
+  assinaturaValidaAte?: any;
 }
 
 export interface Operador {

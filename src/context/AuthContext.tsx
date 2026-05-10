@@ -80,7 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 nomeEmpresa: `Empresa Recuperada`,
                 codigoAcesso: codigoAcesso,
                 emailGestor: currentUser.email,
-                statusAssinatura: "ativo",
+                statusAssinatura: "inativo", // Força recarga em recovery
                 dataCadastro: serverTimestamp()
               };
               
@@ -173,7 +173,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               nomeEmpresa: `Empresa Recuperada`,
               codigoAcesso: codigoAcesso,
               emailGestor: currentUser.email,
-              statusAssinatura: "ativo",
+              statusAssinatura: "inativo", // Força recarga em recovery
               dataCadastro: serverTimestamp()
             };
             
@@ -233,7 +233,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const empresaId = empDoc.id;
       const empData = empDoc.data() as Empresa;
       
-      if (empData.statusAssinatura === 'inativo') {
+      if (empData.statusAssinatura === 'inativo' && empData.emailGestor !== 'jp1067107@gmail.com') {
         throw new Error('Sistema temporariamente bloqueado. Contate o gestor da frota.');
       }
 

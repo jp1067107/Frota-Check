@@ -79,7 +79,7 @@ export const RegisterGestor: React.FC = () => {
         nomeEmpresa: nomeEmpresa,
         codigoAcesso: codigoLimpo,
         emailGestor: email,
-        statusAssinatura: "ativo",
+        statusAssinatura: "inativo", // Força pagamento na entrada
         dataCadastro: serverTimestamp()
       }).catch(err => {
         handleFirestoreError(err, OperationType.CREATE, `empresas/${uid}`);

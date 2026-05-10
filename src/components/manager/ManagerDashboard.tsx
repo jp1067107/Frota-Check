@@ -537,6 +537,28 @@ export const ManagerDashboard: React.FC = () => {
                 </div>
                 <p className="text-xs text-zinc-500 mt-4 font-medium max-w-md">Forneça este código aos seus operadores para que eles possam acessar o aplicativo de checklist.</p>
               </div>
+              <div className="pt-8 border-t border-white/5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-2">Status da Assinatura</p>
+                    <div className="flex items-center gap-3">
+                      <div className={`w-3 h-3 rounded-full ${empresa.statusAssinatura === 'ativo' ? 'bg-green-500' : 'bg-red-500'} animate-pulse`}></div>
+                      <p className={`text-lg font-black uppercase tracking-tight ${empresa.statusAssinatura === 'ativo' ? 'text-green-500' : 'text-red-500'}`}>
+                        {empresa.statusAssinatura === 'ativo' ? 'Ativa' : 'Inativa'}
+                      </p>
+                    </div>
+                  </div>
+                  <a 
+                    href={(import.meta.env.VITE_CAKTO_CHECKOUT_URL || 'https://pay.cakto.com.br/') + `?email=${encodeURIComponent(empresa.emailGestor)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="bg-amber-500 text-zinc-950 hover:bg-amber-400 font-bold tracking-widest uppercase transition-colors px-6 h-12">
+                      {empresa.statusAssinatura === 'ativo' ? 'Renovar / Gerenciar' : 'Pagar Assinatura'}
+                    </Button>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         )}
